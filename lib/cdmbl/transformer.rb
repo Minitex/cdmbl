@@ -75,7 +75,7 @@ module CDMBL
         {dest_path: 'topic_teim', origin_path: 'genera', formatters: [StripFormatter, SplitFormatter, StripFormatter]},
         {dest_path: 'topic_ssim', origin_path: 'genera', formatters: [Titlieze, StripFormatter, SplitFormatter, StripFormatter]},
         {dest_path: 'topic_unstem_search', origin_path: 'genera', formatters: [StripSemicolonFormatter, StripFormatter]},
-        {dest_path: 'type_ssi', origin_path: 'type', formatters: [Titlieze, StripSemicolonFormatter]},
+        {dest_path: 'type_ssi', origin_path: 'type', formatters: [Titlieze, StripSemicolonFormatter, StripFormatter]},
         {dest_path: 'physical_format_ssi', origin_path: 'physic', formatters: [StripSemicolonFormatter]},
         {dest_path: 'physical_format_tei', origin_path: 'physic', formatters: [StripSemicolonFormatter]},
         {dest_path: 'formal_subject_unstem_search', origin_path: 'specif', formatters: [StripFormatter]},
