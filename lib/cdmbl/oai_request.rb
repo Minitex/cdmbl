@@ -34,6 +34,7 @@ module CDMBL
       end
 
       def request(location)
+        Rails.logger.info("CDMBL: Requesting Identifiers from #{location}")
         client.get_response(URI(location)).body
       end
     end
