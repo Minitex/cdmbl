@@ -139,8 +139,7 @@ module CDMBL
         {dest_path: 'geographic_feature_ssim', origin_path: 'geogra', formatters: [Titlieze, StripFormatter, SplitFormatter, StripFormatter]},
         {dest_path: 'geographic_feature_teim', origin_path: 'geogra', formatters: [StripFormatter]},
         {dest_path: 'geographic_feature_unstem_search', origin_path: 'geogra', formatters: [StripFormatter]},
-        {dest_path: 'compound_objects_ts', origin_path: 'compound_objects', formatters: [ToJsonFormatter]},
-        {dest_path: 'image_ids_ssim', origin_path: 'compound_objects', formatters: [ImageId]},
+        {dest_path: 'compound_objects_ts', origin_path: 'page', formatters: [ToJsonFormatter]}
       ]
     end
   end
