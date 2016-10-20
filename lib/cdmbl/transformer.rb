@@ -48,7 +48,7 @@ module CDMBL
     def self.default_mappings
       [
         {dest_path: 'location_llsi', origin_path: '/', formatters: [LocationFormatter]},
-        {dest_path: 'id', origin_path: 'id', formatters: [StripFormatter]},
+        {dest_path: 'id', origin_path: 'id', formatters: [StripFormatter, IDFormatter]},
         {dest_path: 'setspec_ssi', origin_path: '/', formatters: [AddSetSpecFormatter, SetSpecFormatter]},
         {dest_path: 'collection_name_ssi', origin_path: '/', formatters: [AddSetSpecFormatter, CollectionNameFormatter]},
         {dest_path: 'collection_name_tei', origin_path: '/', formatters: [AddSetSpecFormatter, CollectionNameFormatter]},

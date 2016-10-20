@@ -7,6 +7,12 @@ module CDMBL
       value
     end
   end
+
+  class IDFormatter
+    def self.format(value)
+      value.split('/').join(':')
+    end
+  end
   
   class Titlieze
     def self.format(value)
