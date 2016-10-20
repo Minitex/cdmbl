@@ -11,7 +11,7 @@ module CDMBL
       if etl_run.next_resumption_token && recursive
         ETLWorker.perform_async(solr_config, next_etl_config)
       else
-        CDMBL::Callback.call!(solr_client)
+        CDMBL::CompletedCallback.call!(solr_client)
       end
     end
 

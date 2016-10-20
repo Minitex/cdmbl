@@ -34,7 +34,7 @@ module CDMBL
       end
 
       def request(location)
-        Rails.logger.info("CDMBL: Requesting Identifiers from #{location}")
+        CDMBL::OaiNotification.call!(location)
         client.get_response(URI(location)).body
       end
     end

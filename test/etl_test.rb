@@ -29,10 +29,10 @@ module CDMBL
       extractor.expect :new, extraction, [{oai_request: oai_request_object, cdm_endpoint: "http://blorg"}]
       extraction.expect :records, [{foo: 'bar'}]
       extraction.expect :set_lookup, [{'swede1' => {name: 'Swede', description: 'All about the Swedes'}}]
-      extraction.expect :deletable_ids, ['swede/1', 'swede/2']
+      extraction.expect :deletable_ids, ['swede:1', 'swede:2']
       transformer.expect :new, transformation, [{:cdm_records=>[{:foo=>"bar"}], :oai_sets=>[{"swede1"=>{:name=>"Swede", :description=>"All about the Swedes"}}], :field_mappings=>false}]
       transformation.expect :records, [{blah: 'blah'}]
-      loader.expect :new, persister, [{:records=>[{:blah=>"blah"}], :deletable_ids=>["swede/1", "swede/2"], solr_client: solr_client, }]
+      loader.expect :new, persister, [{:records=>[{:blah=>"blah"}], :deletable_ids=>["swede:1", "swede:2"], solr_client: solr_client, }]
       persister.expect :load!, true
       etl_run.load!
       oai_requester.verify

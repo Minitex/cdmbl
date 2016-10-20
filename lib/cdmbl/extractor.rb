@@ -65,7 +65,7 @@ module CDMBL
     end
 
     def cdm_request(collection, id)
-      Rails.logger.info("CDMBL: Requesting #{collection}/#{id} from #{cdm_endpoint}")
+      CDMBL::CdmNotification.call!(collection, id, cdm_endpoint)
       cdm_item.new(base_url: cdm_endpoint, collection: collection, id: id).metadata
     end
 
