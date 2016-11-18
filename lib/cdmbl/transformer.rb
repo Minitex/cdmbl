@@ -53,6 +53,9 @@ module CDMBL
         {dest_path: 'collection_name_ssi', origin_path: '/', formatters: [AddSetSpecFormatter, CollectionNameFormatter]},
         {dest_path: 'collection_name_tei', origin_path: '/', formatters: [AddSetSpecFormatter, CollectionNameFormatter]},
         {dest_path: 'collection_description_tei', origin_path: '/', formatters: [AddSetSpecFormatter, CollectionDescriptionFormatter, FilterBadCollections]},
+        {dest_path: 'parent_collection_name_ssi', origin_path: 'par', formatters: [StripFormatter]},
+        {dest_path: 'parent_collection_name_tei', origin_path: 'par', formatters: [StripFormatter]},
+        {dest_path: 'parent_collection_description_tei', origin_path: 'par', formatters: [StripFormatter]},
         {dest_path: 'title_tei', origin_path: 'title', formatters: [StripFormatter]},
         {dest_path: 'title_ssi', origin_path: 'title', formatters: [StripFormatter]},
         {dest_path: 'title_sort', origin_path: 'title', formatters: [StripFormatter]},
@@ -84,7 +87,10 @@ module CDMBL
         {dest_path: 'subject_unstem_search', origin_path: 'subjec', formatters: [StripFormatter]},
         {dest_path: 'subject_teim', origin_path: 'subjec', formatters: [StripFormatter, SplitFormatter, StripFormatter]},
         {dest_path: 'subject_ssim', origin_path: 'subjec', formatters: [StripFormatter, SplitFormatter, StripFormatter]},
-        {dest_path: 'city_ssi', origin_path: 'city', formatters: [StripFormatter]},
+        {dest_path: 'keyword_unstem_search', origin_path: '/', formatters: [KeywordFormatter, StripFormatter]},
+        {dest_path: 'keyword_teim', origin_path: '/', formatters: [KeywordFormatter, StripFormatter]},
+        {dest_path: 'keyword_ssim', origin_path: '/', formatters: [KeywordFormatter, StripFormatter]},
+        {dest_path: 'city_ssim', origin_path: 'city', formatters: [StripFormatter, SplitFormatter, StripFormatter]},
         {dest_path: 'city_unstem_search', origin_path: 'city', formatters: [StripFormatter]},
         {dest_path: 'district_ssi', origin_path: 'distri', formatters: [StripFormatter]},
         {dest_path: 'district_unstem_search', origin_path: 'distri', formatters: [StripFormatter]},
@@ -139,7 +145,8 @@ module CDMBL
         {dest_path: 'geographic_feature_ssim', origin_path: 'geogra', formatters: [Titlieze, StripFormatter, SplitFormatter, StripFormatter]},
         {dest_path: 'geographic_feature_teim', origin_path: 'geogra', formatters: [StripFormatter]},
         {dest_path: 'geographic_feature_unstem_search', origin_path: 'geogra', formatters: [StripFormatter]},
-        {dest_path: 'compound_objects_ts', origin_path: 'page', formatters: [ToJsonFormatter]}
+        {dest_path: 'compound_objects_ts', origin_path: 'page', formatters: [ToJsonFormatter]},
+        {dest_path: 'geonam_ssi', origin_path: 'geonam', formatters: [StripFormatter]}
       ]
     end
   end

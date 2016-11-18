@@ -8,6 +8,12 @@ module CDMBL
     end
   end
 
+  class KeywordFormatter
+    def self.format(value)
+      value['specif'].split(';').concat(value['subjec'].split(';')).uniq
+    end
+  end
+
   class IDFormatter
     def self.format(value)
       value.split('/').join(':')
