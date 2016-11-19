@@ -12,7 +12,7 @@ module CDMBL
       end
 
       def identifiers
-        (resumption_token) ? request(batch_uri) : request(first_batch_uri)
+        @ids ||= (resumption_token) ? request(batch_uri) : request(first_batch_uri)
       end
 
       def sets
