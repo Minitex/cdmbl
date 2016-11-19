@@ -16,7 +16,7 @@ module CDMBL
     end
 
     def etl_run
-      @etl_run ||= ETLRun.new(etl_config.merge(solr_client: solr_client))
+      ETLRun.new(etl_config.merge(solr_client: solr_client))
     end
 
     def solr_client
