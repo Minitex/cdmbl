@@ -10,7 +10,10 @@ module CDMBL
 
   class KeywordFormatter
     def self.format(value)
-      value['specif'].split(';').concat(value['subjec'].split(';')).uniq
+      vals = []
+      vals << value['specif'].split(';') if value['specif'].respond_to?(:split)
+      vals << value['subjec'].split(';') if value['subjec'].respond_to?(:split)
+      vals.flatten.uniq
     end
   end
 
