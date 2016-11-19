@@ -3,7 +3,7 @@ module CDMBL
   class OAIFilter
     attr_reader :headers
     def initialize(headers: [])
-      @headers      = headers
+      @headers = headers
     end
 
     def updatable_ids
