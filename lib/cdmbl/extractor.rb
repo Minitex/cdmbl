@@ -10,7 +10,11 @@ module CDMBL
   class Extractor
     extend ::Forwardable
     def_delegators :@oai_request, :sets, :identifiers
-    attr_reader :oai_request, :cdm_item, :cdm_endpoint, :oai_set_lookup, :oai_filter
+    attr_reader :oai_request,
+                :cdm_item,
+                :cdm_endpoint,
+                :oai_set_lookup,
+                :oai_filter
 
     def initialize(oai_request: OaiRequest.new,
                    cdm_endpoint: '',
@@ -30,6 +34,10 @@ module CDMBL
 
     def records
       local_identifiers.map { |identifier| cdm_request(*identifier) }
+    end
+
+    def ids
+      (specific_ids) ? specific_ids : local_identifiers
     end
 
     def deletable_ids
