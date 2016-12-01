@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'hash_at_path', '~> 0.1'
   spec.add_dependency 'contentdm_api', '~> 0.3'
-  spec.add_dependency 'sidekiq', '~> 3.4'
+  spec.add_dependency 'sidekiq', '~> 4.2.7'
   spec.add_dependency 'titleize', '~> 1.4'
   spec.add_dependency 'rsolr', '~> 1.0'
   # This gem generally wants to be in a rails app, but just to avoid adding
