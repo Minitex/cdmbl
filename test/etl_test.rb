@@ -27,14 +27,19 @@ module CDMBL
       solr_client.expect :delete_index!, nil
       oai_requester.expect :new, oai_request_object, [{:base_uri=>"http://blerg", :resumption_token=>false, :from=>"1900-01-01"}]
       extractor.expect :new, extraction, [{oai_request: oai_request_object, cdm_endpoint: "http://blorg"}]
-      extraction.expect :records, [{foo: 'bar'}]
       extraction.expect :set_lookup, [{'swede1' => {name: 'Swede', description: 'All about the Swedes'}}]
       extraction.expect :deletable_ids, ['swede:1', 'swede:2']
-      transformer.expect :new, transformation, [{:cdm_records=>[{:foo=>"bar"}], :oai_sets=>[{"swede1"=>{:name=>"Swede", :description=>"All about the Swedes"}}], :field_mappings=>false}]
+      extraction.expect :local_identifiers, [['swede', 1], ['swede', 2]]
+      extraction.expect :cdm_request, {title: 'Swedes in Tweeds'}, ['swede', 1]
+      extraction.expect :cdm_request, {title: 'Swedes in Reeds'}, ['swede', 2]
+      transformer.expect :new, transformation, [{:cdm_records=>[{:title=>"Swedes in Tweeds"}, {:title=>"Swedes in Reeds"}], :oai_sets=>[{"swede1"=>{:name=>"Swede", :description=>"All about the Swedes"}}], :field_mappings=>false}]
       transformation.expect :records, [{blah: 'blah'}]
       loader.expect :new, persister, [{:records=>[{:blah=>"blah"}], :deletable_ids=>["swede:1", "swede:2"], solr_client: solr_client, }]
       persister.expect :load!, true
-      etl_run.load!
+      extraction_result = etl_run.extract
+      records = extraction_result.local_identifiers.map { |identifier| extraction_result.cdm_request(*identifier) }
+      transformation_result = etl_run.transform(extraction_result.set_lookup, records)
+      etl_run.load!(extraction_result.deletable_ids, transformation_result.records)
       oai_requester.verify
     end
 
@@ -52,7 +57,10 @@ module CDMBL
                        solr_client: solr_client,
                        loader: loader)
       VCR.use_cassette("mdl_etl") do
-        etl.load!
+        extraction = etl.extract
+        records = extraction.local_identifiers.map { |identifier| extraction.cdm_request(*identifier) }       
+        transformation = etl.transform(extraction.set_lookup, records)
+        etl.load!(extraction.deletable_ids, transformation.records)
       end
       loader.verify
     end

@@ -32,10 +32,6 @@ module CDMBL
       oai_set_lookup.new(oai_sets: to_hash(sets)).keyed
     end
 
-    def records
-      local_identifiers.map { |identifier| cdm_request(*identifier) }
-    end
-
     def ids
       (specific_ids) ? specific_ids : local_identifiers
     end
@@ -50,6 +46,12 @@ module CDMBL
 
     def next_resumption_token
       oai_identifiers.at_path('OAI_PMH/ListIdentifiers/resumptionToken')
+    end
+
+    # e.g. local_identifiers.map { |identifier| extractor.cdm_request(*identifier) }
+    def cdm_request(collection, id)
+      CDMBL::CdmNotification.call!(collection, id, cdm_endpoint)
+      cdm_item.new(base_url: cdm_endpoint, collection: collection, id: id).metadata
     end
 
     private
@@ -70,11 +72,6 @@ module CDMBL
 
     def oai_identifiers
       to_hash(identifiers)
-    end
-
-    def cdm_request(collection, id)
-      CDMBL::CdmNotification.call!(collection, id, cdm_endpoint)
-      cdm_item.new(base_url: cdm_endpoint, collection: collection, id: id).metadata
     end
 
     def to_hash(xml)

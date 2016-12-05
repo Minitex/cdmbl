@@ -52,7 +52,7 @@ module CDMBL
       cdm_object.expect :metadata, {id: '123'}
       cdm_object.expect :metadata, {id: '321'}
       extractor = Extractor.new(oai_request: oai_request, cdm_item: cdm_klass)
-      extractor.records.must_equal [{:id=>"123"}, {:id=>"321"}]
+      (extractor.local_identifiers.map { |identifier| extractor.cdm_request(*identifier) }).must_equal [{:id=>"123"}, {:id=>"321"}]
       oai_request.verify
       cdm_object.verify
       cdm_klass.verify

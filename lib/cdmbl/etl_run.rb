@@ -34,29 +34,21 @@ module CDMBL
       @solr_client      = solr_client
     end
 
-    def load!(resumption_token: false)
-      persister.load!
+    def extract
+      @extraction ||= extractor.new(oai_request: oai_request,
+                                    cdm_endpoint: cdm_endpoint)
     end
 
-    def next_resumption_token
-      extraction.next_resumption_token
-    end
-
-    def persister
-      loader.new(records: transformation.records,
-                 deletable_ids: extraction.deletable_ids,
-                 solr_client: solr_client)
-    end
-
-    def transformation
-      @transformation ||= transformer.new(cdm_records: extraction.records,
-                                          oai_sets: extraction.set_lookup,
+    def transform(sets, records)
+      @transformation ||= transformer.new(cdm_records: records,
+                                          oai_sets: sets,
                                           field_mappings: field_mappings)
     end
 
-    def extraction
-      @extraction ||= extractor.new(oai_request: oai_request,
-                                    cdm_endpoint: cdm_endpoint)
+    def load!(deletables, records)
+      loader.new(records: records,
+                 deletable_ids: deletables,
+                 solr_client: solr_client).load!
     end
 
     def oai_request
