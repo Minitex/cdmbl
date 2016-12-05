@@ -75,7 +75,7 @@ module CDMBL
     end
 
     def next_etl_config
-      etl_config.merge(resumption_token: etl_run.next_resumption_token)
+      etl_config.merge(resumption_token: extraction.next_resumption_token)
     end
   end
 end
