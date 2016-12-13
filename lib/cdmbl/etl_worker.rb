@@ -3,14 +3,17 @@ module CDMBL
   class ETLWorker
     attr_reader :solr_config,
                 :etl_config,
+                :batch_size,
                 :is_recursive,
                 :identifiers,
                 :deletables,
                 :sets
 
     include Sidekiq::Worker
+    
     def perform(solr_config,
                 etl_config,
+                batch_size = 10,
                 is_recursive = true,
                 identifiers = [],
                 deletables = [],
@@ -22,6 +25,7 @@ module CDMBL
       @identifiers  = identifiers
       @deletables   = deletables
       @sets         = sets
+      @batch_size   = batch_size
   
       if !identifiers.empty?
         load!
@@ -39,11 +43,12 @@ module CDMBL
 
     def ingest_batches!
       sent_deleted = false
-      extraction.local_identifiers.each_slice(10) do |ids|
+      extraction.local_identifiers.each_slice(batch_size) do |ids|
         delete_ids = (sent_deleted == false) ? extraction.deletable_ids : []
         CDMBL::LoaderNotification.call!(ids, delete_ids)
         ETLWorker.perform_async(solr_config,
                                 etl_config,
+                                batch_size,
                                 is_recursive,
                                 ids,
                                 delete_ids,
