@@ -10,7 +10,7 @@ module CDMBL
                 :sets
 
     include Sidekiq::Worker
-    
+
     def perform(solr_config,
                 etl_config,
                 batch_size = 10,
@@ -45,7 +45,6 @@ module CDMBL
       sent_deleted = false
       extraction.local_identifiers.each_slice(batch_size) do |ids|
         delete_ids = (sent_deleted == false) ? extraction.deletable_ids : []
-        CDMBL::LoaderNotification.call!(ids, delete_ids)
         ETLWorker.perform_async(solr_config,
                                 etl_config,
                                 batch_size,
@@ -58,11 +57,12 @@ module CDMBL
     end
 
     def load!
+      CDMBL::LoaderNotification.call!(transformation.records, deletables)
       etl_run.load!(deletables, transformation.records)
     end
 
     def transformation
-      etl_run.transform(sets, records)
+      @transformation ||= etl_run.transform(sets, records)
     end
 
     def records
