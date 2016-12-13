@@ -11,7 +11,7 @@ module CDMBL
     let(:solr_config)  { {url: 'http://localhost:8983'} }
     it 'works - a worker sanity check' do
       VCR.use_cassette("etl_worker_integration") do
-        ETLWorker.perform_async(solr_config, etl_config, 3, false)
+        ETLWorker.perform_async(solr_config, etl_config, 50, false)
         ETLWorker.drain
       end      
     end

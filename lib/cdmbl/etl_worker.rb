@@ -6,8 +6,7 @@ module CDMBL
                 :batch_size,
                 :is_recursive,
                 :identifiers,
-                :deletables,
-                :sets
+                :deletables
 
     include Sidekiq::Worker
 
@@ -16,15 +15,13 @@ module CDMBL
                 batch_size = 10,
                 is_recursive = true,
                 identifiers = [],
-                deletables = [],
-                sets = [])
+                deletables = [])
   
       @etl_config   = etl_config.symbolize_keys
       @solr_config  = solr_config.symbolize_keys
       @is_recursive = is_recursive
       @identifiers  = identifiers
       @deletables   = deletables
-      @sets         = sets
       @batch_size   = batch_size
   
       if !identifiers.empty?
@@ -50,8 +47,7 @@ module CDMBL
                                 batch_size,
                                 is_recursive,
                                 ids,
-                                delete_ids,
-                                extraction.set_lookup)
+                                delete_ids)
         sent_deleted = true
       end
     end
@@ -62,7 +58,7 @@ module CDMBL
     end
 
     def transformation
-      @transformation ||= etl_run.transform(sets, records)
+      @transformation ||= etl_run.transform(extraction.set_lookup, records)
     end
 
     def records
