@@ -38,13 +38,17 @@ module CDMBL
     private
 
     def ingest_batches!
+      sent_deleted = false
       extraction.local_identifiers.each_slice(10) do |ids|
+        delete_ids = (sent_deleted == false) ? extraction.deletable_ids : []
+        CDMBL::LoaderNotification.call!(ids, delete_ids)
         ETLWorker.perform_async(solr_config,
                                 etl_config,
                                 is_recursive,
                                 ids,
-                                extraction.deletable_ids,
+                                delete_ids,
                                 extraction.set_lookup)
+        sent_deleted = true
       end
     end
 

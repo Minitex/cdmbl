@@ -6,6 +6,8 @@ module CDMBL
       hook(pattern: name.to_s, default: DefaultCompletedCallback)
     elsif name.to_s == 'OaiNotification'
       hook(pattern: name.to_s, default: DefaultOaiNotification)
+    elsif name.to_s == 'LoaderNotification'
+      hook(pattern: name.to_s, default: DefaultLoaderNotification)
     elsif name.to_s == 'CdmNotification'
       hook(pattern: name.to_s, default: DefaultCdmNotification)
     end
