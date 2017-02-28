@@ -3,12 +3,12 @@ module CDMBL
       attr_reader :base_uri, :resumption_token, :client, :from
       def initialize(base_uri: '',
                      resumption_token: false,
-                     from: '1900-01-01',
+                     from: false,
                      client: Net::HTTP)
           @base_uri         = base_uri
           @resumption_token = resumption_token
           @client           = client
-          @from             = from
+          @from             = (from) ? "&from=#{from}" : ''
       end
 
       def identifiers
@@ -22,7 +22,7 @@ module CDMBL
       private
 
       def first_batch_uri
-        "#{base_uri}?verb=ListIdentifiers&metadataPrefix=oai_dc&from=#{from}"
+        "#{base_uri}?verb=ListIdentifiers&metadataPrefix=oai_dc#{from}"
       end
 
       def batch_uri

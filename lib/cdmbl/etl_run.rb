@@ -15,7 +15,7 @@ module CDMBL
                    cdm_endpoint: '',
                    resumption_token: false,
                    field_mappings: false,
-                   minimum_date: '1900-01-01',
+                   minimum_date: nil,
                    oai_requester: OaiRequest,
                    extractor: Extractor,
                    transformer: Transformer,
