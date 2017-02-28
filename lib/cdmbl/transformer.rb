@@ -52,7 +52,7 @@ module CDMBL
         {dest_path: 'setspec_ssi', origin_path: '/', formatters: [AddSetSpecFormatter, SetSpecFormatter]},
         {dest_path: 'collection_name_ssi', origin_path: '/', formatters: [AddSetSpecFormatter, CollectionNameFormatter]},
         {dest_path: 'collection_name_tei', origin_path: '/', formatters: [AddSetSpecFormatter, CollectionNameFormatter]},
-        {dest_path: 'collection_description_tei', origin_path: '/', formatters: [AddSetSpecFormatter, CollectionDescriptionFormatter, FilterBadCollections]},
+        {dest_path: 'collection_description_tesi', origin_path: '/', formatters: [AddSetSpecFormatter, CollectionDescriptionFormatter, FilterBadCollections]},
         {dest_path: 'parent_collection_name_ssi', origin_path: 'par', formatters: [StripFormatter]},
         {dest_path: 'parent_collection_name_tei', origin_path: 'par', formatters: [StripFormatter]},
         {dest_path: 'parent_collection_description_tei', origin_path: 'par', formatters: [StripFormatter]},
