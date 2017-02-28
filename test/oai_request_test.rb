@@ -16,7 +16,7 @@ module CDMBL
 
     describe 'when no resumption token is present' do
       it 'requests the first batch' do
-      client.expect :get_response, client_response, [URI('http://example.com?verb=ListIdentifiers&metadataPrefix=oai_dc&from=1900-01-01')]
+      client.expect :get_response, client_response, [URI('http://example.com?verb=ListIdentifiers&metadataPrefix=oai_dc')]
       client_response.expect :body, 'foo'
         request = OaiRequest.new(base_uri: 'http://example.com', client: client)
         request.identifiers.must_equal 'foo'
