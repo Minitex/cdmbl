@@ -25,7 +25,7 @@ module CDMBL
 
     it "calls its dependencies" do
       solr_client.expect :delete_index!, nil
-      oai_requester.expect :new, oai_request_object, [{:base_uri=>"http://blerg", :resumption_token=>false, :from=>"1900-01-01"}]
+      oai_requester.expect :new, oai_request_object, [{:base_uri=>"http://blerg", :resumption_token=>false, :from=> nil}]
       extractor.expect :new, extraction, [{oai_request: oai_request_object, cdm_endpoint: "http://blorg"}]
       extraction.expect :set_lookup, [{'swede1' => {name: 'Swede', description: 'All about the Swedes'}}]
       extraction.expect :deletable_ids, ['swede:1', 'swede:2']
@@ -58,7 +58,7 @@ module CDMBL
                        loader: loader)
       VCR.use_cassette("mdl_etl") do
         extraction = etl.extract
-        records = extraction.local_identifiers.map { |identifier| extraction.cdm_request(*identifier) }       
+        records = extraction.local_identifiers.map { |identifier| extraction.cdm_request(*identifier) }
         transformation = etl.transform(extraction.set_lookup, records)
         etl.load!(extraction.deletable_ids, transformation.records)
       end
