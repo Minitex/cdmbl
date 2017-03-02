@@ -2,7 +2,7 @@ require 'cdmbl'
 
 namespace :cdmbl do
   desc 'Launch a background job to index metadata from CONTENTdm to Solr.'
-  task :ingest, [:solr_url, :oai_endpoint, :cdm_endpoint, :minimum_date] do |t, args|
+  task :ingest, [:solr_url, :oai_endpoint, :cdm_endpoint, :minimum_date, :set_spec] do |t, args|
     solr_config = { url: args[solr_url] }
     etl_config  = {
                     oai_endpoint: args[:oai_endpoint],
