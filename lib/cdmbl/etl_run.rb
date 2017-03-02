@@ -6,6 +6,7 @@ module CDMBL
                 :resumption_token,
                 :field_mappings,
                 :minimum_date,
+                :set_spec,
                 :oai_requester,
                 :extractor,
                 :transformer,
@@ -16,6 +17,7 @@ module CDMBL
                    resumption_token: false,
                    field_mappings: false,
                    minimum_date: nil,
+                   set_spec: false,
                    oai_requester: OaiRequest,
                    extractor: Extractor,
                    transformer: Transformer,
@@ -28,6 +30,7 @@ module CDMBL
       @field_mappings   = field_mappings
       @oai_requester    = oai_requester
       @minimum_date     = minimum_date
+      @set_spec         = set_spec
       @extractor        = extractor
       @transformer      = transformer
       @loader           = loader
@@ -54,7 +57,8 @@ module CDMBL
     def oai_request
       @oai_request ||= oai_requester.new(base_uri: oai_endpoint,
                                          resumption_token: resumption_token,
-                                         from: minimum_date)
+                                         from: minimum_date,
+                                         set: set_spec)
     end
   end
 
