@@ -32,10 +32,6 @@ module CDMBL
       oai_set_lookup.new(oai_sets: to_hash(sets)).keyed
     end
 
-    def ids
-      (specific_ids) ? specific_ids : local_identifiers
-    end
-
     def deletable_ids
       oai_ids.deletable_ids
     end
