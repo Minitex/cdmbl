@@ -1,30 +1,28 @@
 require 'sidekiq'
 module CDMBL
   class ETLWorker
+    include Sidekiq::Worker
+
     attr_reader :solr_config,
                 :etl_config,
-                :batch_size,
                 :is_recursive,
-                :identifiers,
+                :identifier,
                 :deletables
 
-    include Sidekiq::Worker
 
     def perform(solr_config,
                 etl_config,
-                batch_size = 10,
                 is_recursive = true,
-                identifiers = [],
+                identifier = false,
                 deletables = [])
-  
+
       @etl_config   = etl_config.symbolize_keys
       @solr_config  = solr_config.symbolize_keys
       @is_recursive = is_recursive
-      @identifiers  = identifiers
+      @identifier   = identifier
       @deletables   = deletables
-      @batch_size   = batch_size
-  
-      if !identifiers.empty?
+
+      if identifier
         load!
       else
         ingest_batches!
@@ -40,13 +38,12 @@ module CDMBL
 
     def ingest_batches!
       sent_deleted = false
-      extraction.local_identifiers.each_slice(batch_size) do |ids|
+      extraction.local_identifiers.each do |id|
         delete_ids = (sent_deleted == false) ? extraction.deletable_ids : []
         ETLWorker.perform_async(solr_config,
                                 etl_config,
-                                batch_size,
                                 is_recursive,
-                                ids,
+                                id,
                                 delete_ids)
         sent_deleted = true
       end
@@ -58,13 +55,11 @@ module CDMBL
     end
 
     def transformation
-      @transformation ||= etl_run.transform(extraction.set_lookup, records)
+      @transformation ||= etl_run.transform(extraction.set_lookup, [record])
     end
 
-    def records
-      identifiers.map do |identifier|
-        extraction.cdm_request(*identifier)
-      end
+    def record
+      extraction.cdm_request(*identifier)
     end
 
     def extraction
