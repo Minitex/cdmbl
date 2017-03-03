@@ -5,24 +5,27 @@ module CDMBL
 
     attr_reader :solr_config,
                 :etl_config,
+                :batch_size,
                 :is_recursive,
-                :identifier,
+                :identifiers,
                 :deletables
 
 
     def perform(solr_config,
                 etl_config,
+                batch_size = 5,
                 is_recursive = true,
-                identifier = false,
+                identifiers = [],
                 deletables = [])
 
       @etl_config   = etl_config.symbolize_keys
       @solr_config  = solr_config.symbolize_keys
+      @batch_size   = batch_size.to_i
       @is_recursive = is_recursive
-      @identifier   = identifier
+      @identifiers  = identifiers
       @deletables   = deletables
 
-      if identifier
+      if !identifiers.empty?
         load!
       else
         ingest_batches!
@@ -38,12 +41,13 @@ module CDMBL
 
     def ingest_batches!
       sent_deleted = false
-      extraction.local_identifiers.each do |id|
+      extraction.local_identifiers.each_slice(batch_size) do |ids|
         delete_ids = (sent_deleted == false) ? extraction.deletable_ids : []
         ETLWorker.perform_async(solr_config,
                                 etl_config,
+                                batch_size,
                                 is_recursive,
-                                id,
+                                ids,
                                 delete_ids)
         sent_deleted = true
       end
@@ -55,11 +59,13 @@ module CDMBL
     end
 
     def transformation
-      @transformation ||= etl_run.transform(extraction.set_lookup, [record])
+      @transformation ||= etl_run.transform(extraction.set_lookup, records)
     end
 
-    def record
-      extraction.cdm_request(*identifier)
+    def records
+      identifiers.map do |identifier|
+        extraction.cdm_request(*identifier)
+      end
     end
 
     def extraction
