@@ -36,7 +36,7 @@ module CDMBL
       end
     end
 
-    #TODO: Make a 
+    #TODO: Make a
     def with_location(dest_record, record)
       if record['latitu'] && record['longit'] && record['latitu'] != '' && record['longit'] != ''
         dest_record.merge({'location_llsi': "#{record['latitu']}, #{record['longit']}"})
@@ -146,7 +146,10 @@ module CDMBL
         {dest_path: 'geographic_feature_teim', origin_path: 'geogra', formatters: [StripFormatter]},
         {dest_path: 'geographic_feature_unstem_search', origin_path: 'geogra', formatters: [StripFormatter]},
         {dest_path: 'compound_objects_ts', origin_path: 'page', formatters: [ToJsonFormatter]},
-        {dest_path: 'geonam_ssi', origin_path: 'geonam', formatters: [StripFormatter]}
+        {dest_path: 'geonam_ssi', origin_path: 'geonam', formatters: [StripFormatter]},
+        {dest_path: 'kaltura_audio_ssi', origin_path: 'audio', formatters: [StripFormatter]},
+        {dest_path: 'kaltura_audio_playlist_ssi', origin_path: 'audioa', formatters: [StripFormatter]},
+        {dest_path: 'kaltura_video_ssi', origin_path: 'video', formatters: [StripFormatter]}
       ]
     end
   end

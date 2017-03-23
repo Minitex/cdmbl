@@ -22,7 +22,7 @@ module CDMBL
       value.split('/').join(':')
     end
   end
-  
+
   class Titlieze
     def self.format(value)
       if value.respond_to?(:map)
