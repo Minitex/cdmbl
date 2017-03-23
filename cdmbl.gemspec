@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activesupport', '~> 4.2'
 
   spec.add_development_dependency 'bundler', '~> 1.12'
-  spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'rake', '~> 12.0'
   spec.add_development_dependency 'minitest', '~> 5.0'
   spec.add_development_dependency 'yard', '~> 0.9.0'
   spec.add_development_dependency 'webmock', '~> 1.24', '>= 1.24.0'
