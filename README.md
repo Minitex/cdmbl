@@ -28,6 +28,10 @@ Add the CDMBL rake task to your project Rakefile:
 require 'cdmbl/rake_task'
 ```
 
+### GeoNames (optional)
+
+In order to make use of the GeoNames service, you must purchase a [GeoNames Premium Webservices Account](http://www.geonames.org/commercial-webservices.html). If you do not have a `geonam` field in your CONTENTdm schema, you may ignore this instruction.
+
 ## Usage
 
 Run the ingester
@@ -84,7 +88,7 @@ end
 |origin_path| Where to get the field data from the original record for this mapping. |
 |formatters| [Formatters](https://github.com/UMNLibraries/cdmbl/blob/master/lib/cdmbl/formatters.rb) perform tasks such as stripping white space or splitting CONTENTdm multi-valued fields (delimited by semicolons) into JSON arrays. |
 
-**Note:** The first formatter receives the value found at the declared `origin_path`. Each formatter declared after the initial formatter will receive a value produced by the preceding formatter. 
+**Note:** The first formatter receives the value found at the declared `origin_path`. Each formatter declared after the initial formatter will receive a value produced by the preceding formatter.
 
 Formatters are very simple stateless classes that take a value, do something to it, and respond with a modified version of this value via a class method called `format`. Examples of other formatters may be found in the [Formatters file](https://github.com/UMNLibraries/cdmbl/blob/master/lib/cdmbl/formatters.rb). For Example:
 
@@ -103,13 +107,13 @@ mappings = CDMBL::Transformer.default_mappings.merge(your_custom_field_mappings)
 ```
 ## A Custom Post-indexing Callback
 
-If you would like to perform some action (e.g. send an email) following the completion of the CDMBL indexing process, you may declare your own callback hook (anything with "Callback" in the class name declared within the CDMBL module space will be used). To do so in Rails, create a Rails initializer file `config/initializers/cdmbl.rb`: 
+If you would like to perform some action (e.g. send an email) following the completion of the CDMBL indexing process, you may declare your own callback hook (anything with "Callback" in the class name declared within the CDMBL module space will be used). To do so in Rails, create a Rails initializer file `config/initializers/cdmbl.rb`:
 
 ```ruby
 module CDMBL
   class Callback
     def self.call!
-      Rails.logger.info("My Custom CDMBL Callback")      
+      Rails.logger.info("My Custom CDMBL Callback")
     end
   end
 end

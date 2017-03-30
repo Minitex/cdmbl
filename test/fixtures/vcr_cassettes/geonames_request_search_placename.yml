@@ -1,0 +1,126 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://ws.geonames.net/getJSON?geonameId=5024729&username=mndigital
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - ws.geonames.net
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 30 Mar 2017 18:57:57 GMT
+      Server:
+      - Apache/2.4.6 (CentOS) mod_jk/1.2.41 OpenSSL/1.0.1e-fips
+      Cache-Control:
+      - no-cache
+      Access-Control-Allow-Origin:
+      - "*"
+      Transfer-Encoding:
+      - chunked
+      Content-Type:
+      - application/json;charset=UTF-8
+    body:
+      encoding: UTF-8
+      string: '{"timezone":{"gmtOffset":-6,"timeZoneId":"America/Chicago","dstOffset":-5},"asciiName":"Duluth,
+        City of","countryId":"6252001","fcl":"A","srtm3":309,"adminId2":"5045020","countryCode":"US","adminId1":"5037779","lat":"46.78111","fcode":"ADMD","continentCode":"NA","adminCode2":"137","adminCode1":"MN","lng":"-92.11806","geonameId":5024729,"toponymName":"Duluth,
+        City of","population":0,"adminName5":"","adminName4":"","adminName3":"","alternateNames":[],"adminName2":"Saint
+        Louis County","name":"Duluth, City of","fclName":"country, state, region,...","countryName":"United
+        States","fcodeName":"administrative division","adminName1":"Minnesota"}'
+    http_version: 
+  recorded_at: Thu, 30 Mar 2017 18:57:57 GMT
+- request:
+    method: get
+    uri: http://ws.geonames.net/getJSON?geonameId=5024729&username=mndigital
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - ws.geonames.net
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 30 Mar 2017 18:57:57 GMT
+      Server:
+      - Apache/2.4.6 (CentOS) mod_jk/1.2.41 OpenSSL/1.0.1e-fips
+      Cache-Control:
+      - no-cache
+      Access-Control-Allow-Origin:
+      - "*"
+      Transfer-Encoding:
+      - chunked
+      Content-Type:
+      - application/json;charset=UTF-8
+    body:
+      encoding: UTF-8
+      string: '{"timezone":{"gmtOffset":-6,"timeZoneId":"America/Chicago","dstOffset":-5},"asciiName":"Duluth,
+        City of","countryId":"6252001","fcl":"A","srtm3":309,"adminId2":"5045020","countryCode":"US","adminId1":"5037779","lat":"46.78111","fcode":"ADMD","continentCode":"NA","adminCode2":"137","adminCode1":"MN","lng":"-92.11806","geonameId":5024729,"toponymName":"Duluth,
+        City of","population":0,"adminName5":"","adminName4":"","adminName3":"","alternateNames":[],"adminName2":"Saint
+        Louis County","name":"Duluth, City of","fclName":"country, state, region,...","countryName":"United
+        States","fcodeName":"administrative division","adminName1":"Minnesota"}'
+    http_version: 
+  recorded_at: Thu, 30 Mar 2017 18:57:57 GMT
+- request:
+    method: get
+    uri: http://ws.geonames.net/getJSON?geonameId=5024729&username=mndigital
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - ws.geonames.net
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 30 Mar 2017 18:57:57 GMT
+      Server:
+      - Apache/2.4.6 (CentOS) mod_jk/1.2.41 OpenSSL/1.0.1e-fips
+      Cache-Control:
+      - no-cache
+      Access-Control-Allow-Origin:
+      - "*"
+      Transfer-Encoding:
+      - chunked
+      Content-Type:
+      - application/json;charset=UTF-8
+    body:
+      encoding: UTF-8
+      string: '{"timezone":{"gmtOffset":-6,"timeZoneId":"America/Chicago","dstOffset":-5},"asciiName":"Duluth,
+        City of","countryId":"6252001","fcl":"A","srtm3":309,"adminId2":"5045020","countryCode":"US","adminId1":"5037779","lat":"46.78111","fcode":"ADMD","continentCode":"NA","adminCode2":"137","adminCode1":"MN","lng":"-92.11806","geonameId":5024729,"toponymName":"Duluth,
+        City of","population":0,"adminName5":"","adminName4":"","adminName3":"","alternateNames":[],"adminName2":"Saint
+        Louis County","name":"Duluth, City of","fclName":"country, state, region,...","countryName":"United
+        States","fcodeName":"administrative division","adminName1":"Minnesota"}'
+    http_version: 
+  recorded_at: Thu, 30 Mar 2017 18:57:57 GMT
+recorded_with: VCR 3.0.3

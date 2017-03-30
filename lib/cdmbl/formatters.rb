@@ -1,6 +1,41 @@
 require 'titleize'
+require 'json'
+require 'net/http'
 # A handful of very simple formatters to clean up CONTENTdm API metadata
 module CDMBL
+
+
+  class GeoNameID
+    def self.format(value)
+      value.split('/').last
+    end
+  end
+
+  class GeoNameIDToJson
+    URL = "http://ws.geonames.net/getJSON?username=#{ENV['GEONAMES_USER']}"
+    def self.format(value)
+      JSON.parse(Net::HTTP.get_response(URI.parse("#{URL}&geonameId=#{value}")).body)
+    end
+  end
+
+  class GeoNameToLocation
+    def self.format(value)
+      return if !value.respond_to?(:fetch)
+      return if !value['lat'] || !value['lng']
+      "#{value['lat']},#{value['lng']}"
+    end
+  end
+
+  class GeoNameToPlaceName
+    def self.format(value)
+      return if !value.respond_to?(:fetch)
+      [
+        value['name'],
+        value['adminName1'],
+        value['adminName2']
+      ].select { |place| place != 'Minnesota'}.compact.uniq
+    end
+  end
 
   class DefaultFormatter
     def self.format(value)
