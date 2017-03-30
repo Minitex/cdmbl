@@ -141,9 +141,9 @@ module CDMBL
         {dest_path: 'kaltura_audio_ssi', origin_path: 'audio', formatters: [StripFormatter]},
         {dest_path: 'kaltura_audio_playlist_ssi', origin_path: 'audioa', formatters: [StripFormatter]},
         {dest_path: 'kaltura_video_ssi', origin_path: 'video', formatters: [StripFormatter]},
-        {dest_path: 'location_llsi', origin_path: 'geonam', formatters: [GeoNameID, GeoNameIDToJson, GeoNameToLocation]},
-        {dest_path: 'location_ssim', origin_path: 'geonam', formatters: [GeoNameID, GeoNameIDToJson, GeoNameToPlaceName]},
-        {dest_path: 'location_unstem_search', origin_path: 'geonam', formatters: [GeoNameID, GeoNameIDToJson, GeoNameToPlaceName]}
+        {dest_path: 'coordinates_llsi', origin_path: 'geonam', formatters: [GeoNameID, GeoNameIDToJson, GeoNameToLocation]},
+        {dest_path: 'placename_ssim', origin_path: 'geonam', formatters: [GeoNameID, GeoNameIDToJson, GeoNameToPlaceName]},
+        {dest_path: 'placename_unstem_search', origin_path: 'geonam', formatters: [GeoNameID, GeoNameIDToJson, GeoNameToPlaceName]}
       ]
     end
   end
