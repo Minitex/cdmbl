@@ -30,7 +30,8 @@ module CDMBL
       else
         ingest_batches!
         if extraction.next_resumption_token && is_recursive
-          ETLWorker.perform_async(solr_config, next_etl_config)
+          # Call the next batch of records
+          ETLWorker.perform_async(solr_config, next_etl_config, batch_size)
         else
           CDMBL::CompletedCallback.call!(solr_client)
         end
@@ -39,6 +40,7 @@ module CDMBL
 
     private
 
+    # Break down extractions into batches of IDs for ingestion
     def ingest_batches!
       sent_deleted = false
       extraction.local_identifiers.each_slice(batch_size) do |ids|
