@@ -12,7 +12,7 @@ module CDMBL
   end
 
   class GeoNameIDToJson
-    URL = "http://ws.geonames.net/getJSON?username=#{ENV['GEONAMES_USER']}"
+    URL = "http://ws.geonames.net/getJSON?username=#{ENV['GEONAMES_USER']}&token=#{ENV['GEONAMES_TOKEN']}"
     def self.format(value)
       JSON.parse(Net::HTTP.get_response(URI.parse("#{URL}&geonameId=#{value}")).body)
     end
