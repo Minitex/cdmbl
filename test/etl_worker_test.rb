@@ -5,7 +5,7 @@ Sidekiq::Testing.fake!
 
 module CDMBL
   describe ETLWorker do
-    let(:oai_endpoint) { 'http://reflections.mndigital.org/oai/oai.php' }
+    let(:oai_endpoint) { 'http://cdm16022.contentdm.oclc.org/oai/oai.php' }
     let(:cdm_endpoint) { 'https://server16022.contentdm.oclc.org/dmwebservices/index.php' }
 
     let(:etl_config)   do {
