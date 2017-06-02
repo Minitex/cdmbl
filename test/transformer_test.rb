@@ -40,5 +40,16 @@ module CDMBL
         transformation = Transformer.new(cdm_records: records).records.first
         transformation['placename_ssim'].must_equal ["Duluth, City of", "Saint Louis County"]
     end
+
+    it "creates a composite keyword field" do
+      records = [{
+                    'id' => 'foo/123',
+                    'genera' => 'Minnesota;Lakes',
+                    'specif' => 'Hennepin County',
+                    'subjec' => 'Bar'
+                }]
+        transformation = Transformer.new(cdm_records: records).records.first
+        transformation['keyword_ssim'].must_equal ["Bar", "Hennepin County", "Lakes", "Minnesota"]
+    end
   end
 end

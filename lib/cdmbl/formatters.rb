@@ -46,9 +46,10 @@ module CDMBL
   class KeywordFormatter
     def self.format(value)
       vals = []
+      vals << value['genera'].split(';') if value['genera'].respond_to?(:split)
       vals << value['specif'].split(';') if value['specif'].respond_to?(:split)
       vals << value['subjec'].split(';') if value['subjec'].respond_to?(:split)
-      vals.flatten.uniq
+      vals.flatten.uniq.sort
     end
   end
 
