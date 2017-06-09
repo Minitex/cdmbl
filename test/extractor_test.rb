@@ -38,15 +38,17 @@ module CDMBL
                           </set>
                         </ListSets>
                       </OAI-PMH>'}
+      let(:sets_hash) { Hash.from_xml(sets_xml) }
+      let(:identifiers_hash) { Hash.from_xml(identifiers_xml) }
 
     it 'parses an OAI ListIdentifiers request into an array of collection / identifier arrays' do
-      oai_request.expect :identifiers, identifiers_xml
+      oai_request.expect :identifiers, identifiers_hash
       Extractor.new(oai_request: oai_request).local_identifiers.must_equal [["p16022coll44", "0"], ["p16022coll44", "1"]]
       oai_request.verify
     end
 
     it 'makes a request to a CONTENTdm API for each collection/identifier set' do
-      oai_request.expect :identifiers, identifiers_xml
+      oai_request.expect :identifiers, identifiers_hash
       cdm_klass.expect :new, cdm_object, [{:base_url=>"", :collection=>"p16022coll44", :id=>"0"}]
       cdm_klass.expect :new, cdm_object, [{:base_url=>"", :collection=>"p16022coll44", :id=>"1"}]
       cdm_object.expect :metadata, {id: '123'}
@@ -59,22 +61,22 @@ module CDMBL
     end
 
     it 'returns a set of collections keyed by their setSpec' do
-      oai_request.expect :sets, sets_xml
+      oai_request.expect :sets, sets_hash
       extractor = Extractor.new(oai_request: oai_request, cdm_item: cdm_klass)
       extractor.set_lookup.must_equal({"p16022coll44"=>{:name=>"American Craft Council", :description=>"Collection information undefined."}, "swede"=>{:name=>"American Swedish Institute", :description=>nil}})
       oai_request.verify
     end
 
     it 'returns the next resumption token' do
-      oai_request.expect :identifiers, identifiers_xml
+      oai_request.expect :identifiers, identifiers_hash
       extractor = Extractor.new(oai_request: oai_request)
       extractor.next_resumption_token.must_equal 'swede:96:oclc-cdm-allsets:0000-00-00:9999-99-99:oai_dc'
       oai_request.verify
     end
 
     it 'returns the next resumption token' do
-      oai_request.expect :identifiers, identifiers_xml
-      oai_request.expect :identifiers, identifiers_xml
+      oai_request.expect :identifiers, identifiers_hash
+      oai_request.expect :identifiers, identifiers_hash
       oai_filter = Minitest::Mock.new
       oai_filter_object = Minitest::Mock.new
       oai_filter.expect :new, oai_filter_object, [{:headers=>[{"identifier"=>"oai:reflections.mndigital.org:p16022coll44/0", "datestamp"=>"2015-09-30", "setSpec"=>"p16022coll44"}, {"identifier"=>"oai:reflections.mndigital.org:p16022coll44/1", "datestamp"=>"2015-09-30", "setSpec"=>"p16022coll44"}]}]

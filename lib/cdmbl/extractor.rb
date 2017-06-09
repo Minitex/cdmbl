@@ -29,7 +29,7 @@ module CDMBL
     end
 
     def set_lookup
-      oai_set_lookup.new(oai_sets: to_hash(sets)).keyed
+      oai_set_lookup.new(oai_sets: sets).keyed
     end
 
     def deletable_ids
@@ -67,11 +67,7 @@ module CDMBL
     end
 
     def oai_identifiers
-      to_hash(identifiers)
-    end
-
-    def to_hash(xml)
-      Hash.from_xml(xml)
+      identifiers
     end
   end
 end
