@@ -14,7 +14,7 @@ module CDMBL
 
     def deletables
       identifiers.select do |id|
-        record_exists? to_oai_id(id)
+        record_missing? to_oai_id(id)
       end
     end
 
@@ -36,8 +36,8 @@ module CDMBL
       id.split(':')
     end
 
-    def record_exists?(identifier)
-      oai_record_klass.new(oai_client: oai_client,
+    def record_missing?(identifier)
+      !oai_record_klass.new(oai_client: oai_client,
                            identifier: identifier).record_exists?
     end
   end

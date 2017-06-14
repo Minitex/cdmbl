@@ -8,7 +8,7 @@ module CDMBL
                 :oai_deletables_klass
     def initialize(prefix: '',
                    start: 0,
-                   batch_size: 200,
+                   batch_size: 10,
                    oai_client: :missing_oai_client,
                    solr_client: :missing_solr_client,
                    oai_deletables_klass: OaiDeletables)
@@ -28,24 +28,26 @@ module CDMBL
       start + batch_size >= num_found
     end
 
+
     private
 
     def deletables
-      oai_deletables_klass.new(identifiers: docs,
+      []
+      oai_deletables_klass.new(identifiers: ids,
                                prefix: prefix,
                                oai_client: oai_client).deletables
     end
 
-    def docs
-      ids.fetch('response', {}).fetch('docs', {})
+    def ids
+      results.fetch('response', {}).fetch('docs', {}).map { |doc| doc['id'] }
     end
 
     def num_found
-      ids.fetch('response', {}).fetch('numFound', 0)
+      results.fetch('response', {}).fetch('numFound', 0)
     end
 
-    def ids
-      @ids ||= solr_client.ids(start: start)
+    def results
+      @results ||= solr_client.ids(start: start)
     end
   end
 end

@@ -19,7 +19,7 @@ module CDMBL
                         prefix: 'oai:blah:',
                         oai_client: oai_client,
                         oai_record_klass: oai_record_klass).deletables
-        .must_equal ['colleciton123:1']
+        .must_equal ['colleciton124:2']
       oai_record_klass.verify
       oai_record_klass_object_1.verify
       oai_record_klass_object_2.verify

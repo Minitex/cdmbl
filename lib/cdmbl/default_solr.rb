@@ -14,7 +14,7 @@ module CDMBL
         :params => { :q => '*:*',
           :defType => 'edismax',
           :fl => '',
-          :rows => 200,
+          :rows => 10,
           :start => start
         }
       )

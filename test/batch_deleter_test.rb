@@ -6,13 +6,13 @@ module CDMBL
     let(:solr_client) { Minitest::Mock.new }
     let(:oai_deletables_klass) { Minitest::Mock.new }
     let(:oai_deletables_klass_object) { Minitest::Mock.new }
-    let(:solr_docs) { ['collection1:23', 'collection1:24'] }
+    let(:solr_docs) { ['collection1:23' , 'collection1:24'] }
     let(:prefix) { 'oai:blah:' }
     let(:solr_response) do
       {
         'response' =>
           {
-            'docs' => solr_docs,
+            'docs' => [{ 'id' => 'collection1:23' }, { 'id' => 'collection1:24' }],
             'numFound' => 2,
           }
       }
