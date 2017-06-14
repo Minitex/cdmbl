@@ -23,6 +23,10 @@ end
 module CDMBL
 
   class TestConnection
+    def get(query, params)
+      { 'response' => { 'docs' => [], 'numFound' => 0 } }
+    end
+
     def add(records)
     end
 

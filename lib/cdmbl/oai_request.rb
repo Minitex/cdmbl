@@ -29,23 +29,7 @@ module CDMBL
         @sets ||= request(sets_uri)
       end
 
-      def record
-        @record ||= request(record_uri)
-      end
-
-      def record_exists?
-        (/The value of the identifier argument is unknown/ =~ record_errors) == nil
-      end
-
       private
-
-      def record_errors
-        record.fetch('OAI_PMH', {}).fetch('error', '')
-      end
-
-      def record_uri
-        "#{base_uri}?verb=GetRecord&identifier=#{identifier}&metadataPrefix=oai_dc"
-      end
 
       def first_batch_uri
         "#{base_uri}?verb=ListIdentifiers&metadataPrefix=oai_dc#{from}#{set}"

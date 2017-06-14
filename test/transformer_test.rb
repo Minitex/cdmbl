@@ -38,7 +38,7 @@ module CDMBL
         transformation['coordinates_llsi'].must_equal '46.78111,-92.11806'
 
         transformation = Transformer.new(cdm_records: records).records.first
-        transformation['placename_ssim'].must_equal ["Duluth, City of", "Saint Louis County"]
+        transformation['placename_ssim'].must_equal ["City of Duluth", "Saint Louis County"]
     end
 
     it "creates a composite keyword field" do
