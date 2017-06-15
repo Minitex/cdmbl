@@ -3,8 +3,6 @@ require 'sidekiq/testing'
 require 'webmock/minitest'
 Sidekiq::Testing.fake!
 
-WebMock.enable!
-
 module CDMBL
   describe BatchDeleterWorker do
     let(:batch_deleter_klass) { Minitest::Mock.new }
@@ -20,7 +18,7 @@ module CDMBL
       VCR.use_cassette("batch_delete_worker") do
         worker = BatchDeleterWorker.new
         worker.perform(0, prefix, oai_url, solr_url).deletables.must_equal ["bad:ID"]
-        worker.perform(0, prefix, oai_url, solr_url).last_batch?.must_equal true
+        worker.perform(0, prefix, oai_url, solr_url).last_batch?.must_equal false
       end
     end
 
@@ -48,5 +46,3 @@ module CDMBL
     end
   end
 end
-
-WebMock.disable!

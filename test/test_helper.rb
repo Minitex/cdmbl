@@ -29,9 +29,16 @@ module CDMBL
         'docs' => [
           {'id' => 'irrc:1600'},
           {'id' => 'irrc:1601'},
+          {'id' => 'irrc:1601'},
+          {'id' => 'irrc:1568'},
+          {'id' => 'irrc:1569'},
+          {'id' => 'irrc:1747'},
+          {'id' => 'otter:297'},
+          {'id' => 'nemhc:5897'},
+          {'id' => 'pch:612'},
           {'id' => 'bad:ID'}
         ],
-        'numFound' => 3 }
+        'numFound' => 11 }
       }
     end
 

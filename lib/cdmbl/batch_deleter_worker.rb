@@ -23,10 +23,7 @@ module CDMBL
     def delete!
       batch_deleter.delete!
       unless batch_deleter.last_batch?
-        BatchDeleterWorker.perform_async(start: start + 1,
-                                        prefix: prefix,
-                                        oai_url: oai_url,
-                                        solr_url: solr_url)
+        BatchDeleterWorker.perform_async start + 1, prefix, oai_url, solr_url
       end
     end
 
