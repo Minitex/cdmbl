@@ -31,7 +31,7 @@ module CDMBL
           {'id' => 'irrc:1601'},
           {'id' => 'bad:ID'}
         ],
-        'numFound' => 0 }
+        'numFound' => 3 }
       }
     end
 

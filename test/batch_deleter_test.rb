@@ -18,7 +18,11 @@ module CDMBL
       }
     end
 
-    it 'deletes deletable records' do
+    let(:oai_url) { 'http://cdm16022.contentdm.oclc.org/oai/oai.php' }
+    let(:solr_url) { 'http://localhost:8983' }
+    let(:prefix) { 'oai:cdm16022.contentdm.oclc.org:' }
+
+    it 'calls its collaborators' do
       solr_client.expect :ids, solr_response, [{start: 0}]
       oai_deletables_klass.expect :new,
                                   oai_deletables_klass_object,
@@ -40,6 +44,28 @@ module CDMBL
       solr_client.verify
       oai_deletables_klass.verify
       oai_deletables_klass_object.verify
+    end
+
+    it 'responds with deletable records' do
+      BatchDeleter.new(solr_client: CDMBL::Solr.new(url: solr_url),
+                       oai_client: OaiClient.new(base_url: oai_url),
+                       prefix: prefix).deletables.must_equal ["bad:ID"]
+    end
+
+    describe 'when no more results from solr are present' do
+      it 'signals the last batch' do
+        BatchDeleter.new(solr_client: CDMBL::Solr.new(url: solr_url),
+                         oai_client: OaiClient.new(base_url: oai_url),
+                         prefix: prefix).last_batch?.must_equal true
+      end
+    end
+    describe 'when more results from solr are present' do
+      it 'does not signal the last batch' do
+        BatchDeleter.new(batch_size: 1,
+                         solr_client: CDMBL::Solr.new(url: solr_url),
+                         oai_client: OaiClient.new(base_url: oai_url),
+                         prefix: prefix).last_batch?.must_equal false
+      end
     end
   end
 end
