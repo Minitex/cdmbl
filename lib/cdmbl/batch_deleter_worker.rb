@@ -3,20 +3,26 @@ module CDMBL
   class BatchDeleterWorker
     include Sidekiq::Worker
     attr_reader :start, :prefix, :oai_url, :solr_url
+    attr_accessor :batch_deleter_klass, :oai_client, :solr_client
     def perform(start = 0, prefix = '', oai_url = '', solr_url = '')
       @start    = start
       @prefix   = prefix
       @oai_url  = oai_url
       @solr_url = solr_url
       delete!
+      batch_deleter
     end
 
     private
 
+    def batch_deleter_klass
+      @batch_deleter_klass ||= BatchDeleter
+    end
+
     def delete!
       batch_deleter.delete!
       unless batch_deleter.last_batch?
-        BatchDeleteWorker.perform_async(start: start + 1,
+        BatchDeleterWorker.perform_async(start: start + 1,
                                         prefix: prefix,
                                         oai_url: oai_url,
                                         solr_url: solr_url)
@@ -24,10 +30,11 @@ module CDMBL
     end
 
     def batch_deleter
-      @deleter ||= BatchDeleter.new(start: start,
-                                    prefix: prefix,
-                                    solr_client: solr_client,
-                                    oai_client: oai_client)
+      @batch_deleter ||=
+        batch_deleter_klass.new(start: start,
+                                prefix: prefix,
+                                solr_client: solr_client,
+                                oai_client: oai_client)
     end
 
     def solr_client

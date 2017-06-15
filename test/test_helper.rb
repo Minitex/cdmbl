@@ -24,7 +24,15 @@ module CDMBL
 
   class TestConnection
     def get(query, params)
-      { 'response' => { 'docs' => [], 'numFound' => 0 } }
+      {
+        'response' => {
+        'docs' => [
+          {'id' => 'irrc:1600'},
+          {'id' => 'irrc:1601'},
+          {'id' => 'bad:ID'}
+        ],
+        'numFound' => 0 }
+      }
     end
 
     def add(records)

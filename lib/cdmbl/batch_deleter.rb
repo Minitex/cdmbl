@@ -28,15 +28,14 @@ module CDMBL
       start + batch_size >= num_found
     end
 
+    def deletables
+      @deletables ||= oai_deletables_klass.new(identifiers: ids,
+                                               oai_client: oai_client,
+                                               prefix: prefix).deletables
+    end
 
     private
 
-    def deletables
-      []
-      oai_deletables_klass.new(identifiers: ids,
-                               prefix: prefix,
-                               oai_client: oai_client).deletables
-    end
 
     def ids
       results.fetch('response', {}).fetch('docs', {}).map { |doc| doc['id'] }
