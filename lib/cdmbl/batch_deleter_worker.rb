@@ -4,6 +4,7 @@ module CDMBL
     include Sidekiq::Worker
     attr_reader :start, :prefix, :oai_url, :solr_url
     attr_accessor :batch_deleter_klass, :oai_client, :solr_client
+    sidekiq_options :backtrace => true
     def perform(start = 0, prefix = '', oai_url = '', solr_url = '')
       @start    = start
       @prefix   = prefix
