@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'contentdm_api', '~> 0.3.11'
   spec.add_dependency 'sidekiq', '~> 3.5.4'
   spec.add_dependency 'titleize', '~> 1.4'
-  spec.add_dependency 'rsolr', '~> 1.0'
+  spec.add_dependency 'rsolr', '~> 2.0'
   # This gem generally wants to be in a rails app, but just to avoid adding
   # another external dependency for XML procssing, we rely on activesupport's
   # Has.to_xml feature for testing and to allow this gem to function
