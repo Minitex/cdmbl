@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   # another external dependency for XML procssing, we rely on activesupport's
   # Has.to_xml feature for testing and to allow this gem to function
   # independently from a rails app
-  spec.add_dependency 'activesupport', '~> 4.2'
+  spec.add_dependency 'activesupport', '>= 4.2'
 
   spec.add_development_dependency 'bundler', '~> 1.12'
   spec.add_development_dependency 'rake', '~> 12.0'
