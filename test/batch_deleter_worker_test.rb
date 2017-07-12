@@ -18,7 +18,7 @@ module CDMBL
       VCR.use_cassette("batch_delete_worker") do
         worker = BatchDeleterWorker.new
         worker.perform(0, prefix, oai_url, solr_url).deletables.must_equal ["bad:ID"]
-        worker.perform(0, prefix, oai_url, solr_url).last_batch?.must_equal false
+        worker.perform(0, prefix, oai_url, solr_url).last_batch?.must_equal true
       end
     end
 
