@@ -38,7 +38,7 @@ module CDMBL
           {'id' => 'pch:612'},
           {'id' => 'bad:ID'}
         ],
-        'numFound' => 11 }
+        'numFound' => 10 }
       }
     end
 
