@@ -4,7 +4,7 @@
 
 Use [Blacklight](https://github.com/projectblacklight/blacklight) as a front end for your CONTENTdm instance.
 
-At the moment, CDMBL consists only of a micro [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load) system dedicated to extracting metadata records from a CONTENTdm instance (using the [CONTENTdm API gem](https://github.com/UMNLibraries/contentdm_api), transforming them into Solr documents, and loading them into Solr. After initially populating the entire index, CDMBL allows for selective harvesting for incremental Solr index updates.
+At the moment, CDMBL consists only of a micro [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load) system dedicated to extracting metadata records from a CONTENTdm instance (using the [CONTENTdm API gem](https://github.com/UMNLibraries/contentdm_api), transforming them into Solr documents, and loading them into Solr.
 
 ## Installation
 
