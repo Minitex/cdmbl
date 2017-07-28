@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'rsolr', '~> 2.0'
   # This gem generally wants to be in a rails app, but just to avoid adding
   # another external dependency for XML procssing, we rely on activesupport's
-  # Has.to_xml feature for testing and to allow this gem to function
+  # Has.to_jsonl feature for testing and to allow this gem to function
   # independently from a rails app
   spec.add_dependency 'activesupport', '>= 4.2'
 

@@ -26,7 +26,6 @@ module CDMBL
 
     def add(records)
       connection.add records
-      connection.commit
     end
 
     def delete(ids)

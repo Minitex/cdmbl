@@ -4,32 +4,27 @@ require 'hash_at_path'
 require 'forwardable'
 
 module CDMBL
-  # This extractor uses the SimpleGet extractor initially and then makes
-  # subsequent passes at the full ContentDM API with identifiers taken from
-  # the contentdm api
+  # Retrieve OAI records and sort them into add/updatables and deletables
   class Extractor
     extend ::Forwardable
     def_delegators :@oai_request, :sets, :identifiers
     attr_reader :oai_request,
-                :cdm_item,
-                :cdm_endpoint,
-                :oai_set_lookup,
-                :oai_filter
+                :oai_request_klass,
+                :oai_filter_klass,
+                :oai_set_lookup_klass
 
-    def initialize(oai_request: OaiRequest.new,
-                   cdm_endpoint: '',
-                   oai_set_lookup: OAISetLookup,
-                   cdm_item: CONTENTdmAPI::Item,
-                   oai_filter: OAIFilter)
-      @oai_request    = oai_request
-      @cdm_item       = cdm_item
-      @cdm_endpoint   = cdm_endpoint
-      @oai_set_lookup = oai_set_lookup
-      @oai_filter     = oai_filter
-    end
-
-    def set_lookup
-      oai_set_lookup.new(oai_sets: sets).keyed
+    def initialize(oai_endpoint: '',
+                   resumption_token: nil,
+                   set_spec: nil,
+                   oai_request_klass: OaiRequest,
+                   oai_filter_klass: OAIFilter,
+                   oai_set_lookup_klass: OAISetLookup)
+      @oai_request_klass    = oai_request_klass
+      @oai_filter_klass     = oai_filter_klass
+      @oai_set_lookup_klass = oai_set_lookup_klass
+      @oai_request          = oai_requester(oai_endpoint,
+                                            resumption_token,
+                                            set_spec)
     end
 
     def deletable_ids
@@ -44,16 +39,21 @@ module CDMBL
       oai_identifiers.at_path('OAI_PMH/ListIdentifiers/resumptionToken')
     end
 
-    # e.g. local_identifiers.map { |identifier| extractor.cdm_request(*identifier) }
-    def cdm_request(collection, id)
-      CDMBL::CdmNotification.call!(collection, id, cdm_endpoint)
-      cdm_item.new(base_url: cdm_endpoint, collection: collection, id: id).metadata
+    def oai_ids
+      oai_filter_klass.new(headers: oai_headers)
+    end
+
+    def set_lookup
+      oai_set_lookup_klass.new(oai_sets: sets).keyed
     end
 
     private
 
-    def oai_ids
-      oai_filter.new(headers: oai_headers)
+    def oai_requester(oai_endpoint, resumption_token, set_spec)
+      @oai_requester ||=
+        oai_request_klass.new(base_uri: oai_endpoint,
+                              resumption_token: resumption_token,
+                              set: set_spec)
     end
 
     # Get the local collection and id from an OAI namespaced identifier
@@ -67,7 +67,7 @@ module CDMBL
     end
 
     def oai_identifiers
-      identifiers
+      @oai_identifiers ||= identifiers
     end
   end
 end

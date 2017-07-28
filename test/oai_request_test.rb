@@ -18,11 +18,10 @@ module CDMBL
     it 'allows selective harvesting by date and set' do
       client.expect :get_response,
                     client_response,
-                    [URI('http://example.com?verb=ListIdentifiers&metadataPrefix=oai_dc&from=1900-01-01&set=swede')]
+                    [URI('http://example.com?verb=ListIdentifiers&metadataPrefix=oai_dc&set=swede')]
       client_response.expect :body,
                              '<oai-response><record>foo</record></oai-response>'
-      request = OaiRequest.new from: '1900-01-01',
-                               set: 'swede',
+      request = OaiRequest.new set: 'swede',
                                base_uri: 'http://example.com',
                                client: client
       request.identifiers.must_equal('oai_response' => { 'record' => 'foo' })
