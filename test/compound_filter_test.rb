@@ -27,8 +27,5 @@ module CDMBL
       compound_lookup.verify
       compound_lookup_object.verify
     end
-
-
-
   end
 end
