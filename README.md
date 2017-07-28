@@ -41,22 +41,24 @@ export export GEONAMES_USER="yourusernamehere"
 
 Run the ingester
 
-rake cdmbl:ingest[solr_url,oai_endpoint,cdm_endpoint,minimum_date]
+rake cdmbl:batch[solr_url,oai_endpoint,cdm_endpoint,set_spec, batch_size, max_compounds]
 
 |Argument| Definition|
 |--:|---|
 |solr_url| The full URL to your Solr core instance (same as your blacklight.yml solr url)|
-|oai_endpoint| A URL to your OAI instance (e.g. http://reflections.mndigital.org/oai/oai.php)   |
+|oai_endpoint| A URL to your OAI instance (e.g. https://server16022.contentdm.oclc.org/oai/oai.php)   |
 |cdm_endpoint| A URL to your CONTENTdm API endpoint (e.g. https://server16022.contentdm.oclc.org/dmwebservices/index.php) |
-|minimum_date| Date from which to [selectively harvest](https://www.openarchives.org/OAI/openarchivesprotocol.html#SelectiveHarvesting) identifiers from the OAI endpoint. These identifiers are used to determine which records to delete from your index and which records to request from the CONTENTdm API|
+|set_spec| Selectively harvest from a single collection with [setSpec](http://www.openarchives.org/OAI/openarchivesprotocol.html#Set)|
+|batch_size| The number of records to transform at a time. **Note**: it is within the record transformation process that the CONTENTdm API is requested. This API can be sluggish, so we conservatively transform batches of ten records at a time to prevent timeouts.|
+|max_compounds| CONTENTdm records with many compounds can take a long time to load from the CONTENTdm API as multiple requests must happen in order to get the metadata for each child record of a parent compound object. For this reason, records with ten or more compound children are, by default, processed in batches of one. This setting allows you to override this behavior.|
 
 For example:
 
 ```ruby
-rake "cdmbl:ingest[http://solr:8983/solr/foo-bar-core, http://reflections.mndigital.org/oai/oai.php, https://server16022.contentdm.oclc.org/dmwebservices/index.php, 2015-01-01]"
+rake "cdmbl:ingest[http://solr:8983/solr/foo-bar-core, https://server16022.contentdm.oclc.org/oai/oai.php, https://server16022.contentdm.oclc.org/dmwebservices/index.php, 2015-01-01]"
 ```
 
-### Custom Rake Task
+### Custom Rake Tasks
 
 You might also create your own rake task to run your modified field transformers:
 
@@ -64,14 +66,21 @@ You might also create your own rake task to run your modified field transformers
 require 'cdmbl'
 
 namespace :cdmbl do
-  desc 'Launch a background job to index metadata from CONTENTdm int Solr.'
-  task :ingest do
-    solr_config = { url: 'http://solr:8983/solr/foo-bar-core' }
-    etl_config  = { oai_endpoint: 'http://reflections.mndigital.org/oai/oai.php',
-                    cdm_endpoint: 'https://server16022.contentdm.oclc.org/dmwebservices/index.php',
-                    field_mappings: my_field_mappings,
-                    minimum_date:  '2016-09-01'}
-    CDMBL::ETLWorker.perform_async(solr_config, etl_config)
+  desc "ingest batches of records"
+  ##
+  # e.g. rake mdl_ingester:ingest[2015-09-14, 2]
+  task :batch, [:batch_size, :set_spec] => :environment  do |t, args|
+    config  =
+      {
+        oai_endpoint: 'http://cdm16022.contentdm.oclc.org/oai/oai.php',
+        cdm_endpoint: 'https://server16022.contentdm.oclc.org/dmwebservices/index.php',
+        set_spec: (args[:set_spec] != '""') ? args[:set_spec] : nil,
+        max_compounds: (args[:max_compounds]) ? args[:max_compounds] : 2,
+        batch_size: (args[:batch_size]) ? args[:batch_size] : 30,
+        solr_config: solr_config
+      }
+    CDMBL::ETLWorker.perform_async(config)
+  end
 end
 ```
 ### Your Own Custom Solr Field Mappings (see above code snippet)
