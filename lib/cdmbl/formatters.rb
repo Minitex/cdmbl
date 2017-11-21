@@ -53,6 +53,16 @@ module CDMBL
     end
   end
 
+  class UniqueFormatter
+    def self.format(value)
+      if value.respond_to?(:uniq)
+        value.uniq
+      else
+        value.titleize
+      end
+    end
+  end
+
   class IDFormatter
     def self.format(value)
       value.split('/').join(':')
@@ -104,6 +114,12 @@ module CDMBL
   class SplitFormatter
     def self.format(value)
       (value.respond_to?(:split)) ? value.split(';') : value
+    end
+  end
+
+  class JoinFormatter
+    def self.format(value)
+      (value.respond_to?(:join)) ? value.join('; ') : value
     end
   end
 
