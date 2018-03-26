@@ -4,7 +4,10 @@ require 'titleize'
 module CDMBL
 
   class Transformer
-    attr_reader :cdm_records, :oai_sets, :field_mappings, :record_transformer
+    attr_reader :cdm_records,
+                :oai_sets,
+                :field_mappings,
+                :record_transformer
     def initialize(cdm_records: [],
                    oai_sets: {},
                    field_mappings: false,
@@ -143,10 +146,12 @@ module CDMBL
         {dest_path: 'kaltura_audio_ssi', origin_path: 'audio', formatters: [StripFormatter]},
         {dest_path: 'kaltura_audio_playlist_ssi', origin_path: 'audioa', formatters: [StripFormatter]},
         {dest_path: 'kaltura_video_ssi', origin_path: 'video', formatters: [StripFormatter]},
+        {dest_path: 'kaltura_video_playlist_ssi', origin_path: 'videoa', formatters: [StripFormatter]},
         {dest_path: 'coordinates_llsi', origin_path: 'geonam', formatters: [GeoNameID, GeoNameIDToJson, GeoNameToLocation]},
         {dest_path: 'placename_ssim', origin_path: 'geonam', formatters: [GeoNameID, GeoNameIDToJson, GeoNameToPlaceName]},
         {dest_path: 'placename_unstem_search', origin_path: 'geonam', formatters: [GeoNameID, GeoNameIDToJson, GeoNameToPlaceName]},
-        {dest_path: 'table_ssim', origin_path: 'table', formatters: [StripFormatter, SplitFormatter, StripFormatter]}
+        {dest_path: 'table_ssim', origin_path: 'table', formatters: [StripFormatter, SplitFormatter, StripFormatter]},
+        {dest_path: 'umedia_ssi', origin_path: 'umedia', formatters: [StripFormatter]}
       ]
     end
   end
