@@ -20,6 +20,49 @@ namespace :cdmbl do
     )
   end
 
+  desc 'Launch an indexing worker for each collection with an optional regex
+        pattern to match setSpec. Patterns can be inclusive or exclusive.'
+  task :by_collections, [
+    :solr_url,
+    :oai_endpoint,
+    :cdm_endpoint,
+    :set_spec_pattern,
+    :inclusive,
+    :batch_size
+  ] do |t, args|
+    # Required args
+    oai_endpoint = args.fetch(:oai_endpoint)
+    solr_url = args.fetch(:solr_url)
+    cdm_endpoint = args.fetch(:cdm_endpoint)
+    # Optional args
+    pattern    = args.fetch(:set_spec_pattern, false)
+    inclusive  = args.fetch(:inclusive, true)
+    batch_size = args.fetch(:batch_size, 5)
+
+    # Define your own callback if you want to use other set related fields
+    # Use the SetSpecFilterCallback as an example of how to build your own filter
+    set_specs =
+      if pattern
+        filter = CDMBL::SetSpecFilterCallback.new(pattern: Regexp.new(pattern))
+        CDMBL::FilteredSetSpecs.new(oai_base_url: oai_endpoint,
+                                    callback: filter).set_specs
+      else
+        CDMBL::FilteredSetSpecs.new(oai_base_url: oai_endpoint).set_specs
+      end
+
+    puts "Indexing Sets: '#{set_specs.join(', ')}'"
+
+    etl_config = {
+      solr_config: { url: args.fetch(:solr_url) },
+      oai_endpoint: args.fetch(:oai_endpoint),
+      cdm_endpoint: args.fetch(:cdm_endpoint),
+      batch_size: args.fetch(:batch_size, 10),
+      max_compounds: args.fetch(:max_compounds, 10)
+    }
+
+    CDMBL::ETLBySetSpecs.new(set_specs: set_specs, etl_config: etl_config).run!
+  end
+
   desc 'Launch a background job to index a single record.'
   task :record, [
     :collection,
