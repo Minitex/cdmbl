@@ -40,8 +40,44 @@ module CDMBL
                           </set>
                         </ListSets>
                       </OAI-PMH>'}
+
+
+    let(:identifier_single_xml) {'<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+                        <ListIdentifiers>
+                          <header>
+                            <identifier>oai:reflections.mndigital.org:p16022coll44/0</identifier>
+                              <datestamp>2015-09-30</datestamp>
+                              <setSpec>p16022coll44</setSpec>
+                            </header>
+                            <resumptionToken>swede:96:oclc-cdm-allsets:0000-00-00:9999-99-99:oai_dc</resumptionToken>
+                        </ListIdentifiers>
+                      </OAI-PMH>'}
     let(:sets_hash) { Hash.from_xml(sets_xml) }
     let(:identifiers_hash) { Hash.from_xml(identifiers_xml) }
+
+
+    describe 'when only one record is returned' do
+      it 'handles the request' do
+        oai_request_klass.expect :new,
+                                 oai_request_klass_object,
+                                 [
+                                   {
+                                     :base_uri => 'oai_endpoint_here',
+                                     :resumption_token => 'foo',
+                                     :set => 'bar'
+                                   }
+                                 ]
+        oai_request_klass_object.expect :identifiers, Hash.from_xml(identifier_single_xml)
+        extractor = Extractor.new(oai_endpoint: 'oai_endpoint_here',
+                                  resumption_token: 'foo',
+                                  set_spec: 'bar',
+                                  oai_request_klass: oai_request_klass)
+        extractor.local_identifiers.must_equal [['p16022coll44', '0']]
+        oai_request_klass.verify
+        oai_request_klass_object.verify
+      end
+    end
+
 
     it 'parses an OAI ListIdentifiers request into an array of collection / identifier arrays' do
       oai_request_klass.expect :new,

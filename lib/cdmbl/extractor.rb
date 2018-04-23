@@ -63,7 +63,7 @@ module CDMBL
     end
 
     def oai_headers
-      oai_identifiers.at_path('OAI_PMH/ListIdentifiers/header')
+      [oai_identifiers.at_path('OAI_PMH/ListIdentifiers/header')].flatten
     end
 
     def oai_identifiers
