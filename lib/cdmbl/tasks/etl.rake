@@ -30,20 +30,17 @@ namespace :cdmbl do
     :inclusive,
     :batch_size
   ] do |t, args|
-    # Required args
     oai_endpoint = args.fetch(:oai_endpoint)
-    solr_url = args.fetch(:solr_url)
-    cdm_endpoint = args.fetch(:cdm_endpoint)
     # Optional args
-    pattern    = args.fetch(:set_spec_pattern, false)
-    inclusive  = args.fetch(:inclusive, true)
-    batch_size = args.fetch(:batch_size, 5)
-
+    pattern = args.fetch(:set_spec_pattern, false)
+    inclusive = args.fetch(:inclusive, 'true') == 'true'
     # Define your own callback if you want to use other set related fields
-    # Use the SetSpecFilterCallback as an example of how to build your own filter
+    # Use the RegexFilterCallback as an example of how to build your own filter
     set_specs =
       if pattern
-        filter = CDMBL::SetSpecFilterCallback.new(pattern: Regexp.new(pattern))
+        filter = CDMBL::RegexFilterCallback.new(field: 'setName',
+                                                pattern: Regexp.new(pattern),
+                                                inclusive: inclusive)
         CDMBL::FilteredSetSpecs.new(oai_base_url: oai_endpoint,
                                     callback: filter).set_specs
       else
@@ -56,7 +53,7 @@ namespace :cdmbl do
       solr_config: { url: args.fetch(:solr_url) },
       oai_endpoint: args.fetch(:oai_endpoint),
       cdm_endpoint: args.fetch(:cdm_endpoint),
-      batch_size: args.fetch(:batch_size, 10),
+      batch_size: args.fetch(:batch_size, 5),
       max_compounds: args.fetch(:max_compounds, 10)
     }
 
