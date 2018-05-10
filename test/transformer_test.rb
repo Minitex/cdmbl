@@ -6,6 +6,14 @@ module CDMBL
     let(:cdm_records) { [{'title' => 'The Three-Body Problem'}] }
     let(:record_transformer) { Minitest::Mock.new }
     let(:record_transformer_object) { Minitest::Mock.new }
+    let(:field_mappings) {
+      [
+        {dest_path: 'id', origin_path: 'id', formatters: [StripFormatter, IDFormatter]},
+        {dest_path: 'compound_objects_ts', origin_path: 'page', formatters: [ToJsonFormatter]},
+        {dest_path: 'transcription_tesi', origin_path: 'transc', formatters: [StripFormatter]},
+        {dest_path: 'record_type', origin_path: 'record_type', formatters: []}
+      ]
+    }
 
     it "transforms kaltura media metadata" do
       records = [{
@@ -51,5 +59,35 @@ module CDMBL
         transformation = Transformer.new(cdm_records: records).records.first
         transformation['keyword_ssim'].must_equal ["Bar", "Hennepin County", "Lakes", "Minnesota"]
     end
+
+
+
+    describe 'when a record is a compound' do
+      describe 'and extract_compounds is unset' do
+        it "simply uses the records provided" do
+          records = [{
+                        'id' => 'foo/5123',
+                        'page' => [{'id' => 'blah/3245', 'transc' => 'OHAI CHEEZEBURGER'}]
+                    }]
+            transformation = Transformer.new(cdm_records: records, field_mappings: field_mappings).records
+            transformation.must_equal([{"id"=>"foo:5123", "compound_objects_ts"=>"[{\"id\":\"blah/3245\",\"transc\":\"OHAI CHEEZEBURGER\"}]","record_type"=>"primary"}])
+        end
+      end
+      describe 'and extract_compounds is set to true (we want to unpack the compounds)' do
+        it "simply uses the records provided" do
+          records = [{
+                        'id' => 'foo/5123',
+                        'page' => [{'id' => 'blah/3245', 'transc' => 'OHAI CHEEZEBURGER'}]
+                    }]
+            transformation = Transformer.new(cdm_records: records, extract_compounds: true, field_mappings: field_mappings).records
+            transformation.must_equal([
+              {"id"=>"foo:5123", "compound_objects_ts"=>"[{\"id\":\"blah/3245\",\"transc\":\"OHAI CHEEZEBURGER\",\"parent_id\":\"foo/5123\",\"record_type\":\"secondary\"}]","record_type"=>"primary"},
+              {"id"=>"blah:3245", "transcription_tesi"=>"OHAI CHEEZEBURGER","record_type"=>"secondary"}
+            ])
+        end
+      end
+    end
+
+
   end
 end

@@ -7,22 +7,46 @@ module CDMBL
     attr_reader :cdm_records,
                 :oai_sets,
                 :field_mappings,
+                :extract_compounds,
                 :record_transformer
     def initialize(cdm_records: [],
                    oai_sets: {},
                    field_mappings: false,
+                   extract_compounds: false,
                    record_transformer: RecordTransformer)
-      @cdm_records        = cdm_records
+      @cdm_records = cdm_records.map do |record|
+        record.merge('record_type' => 'primary')
+      end
       @oai_sets           = oai_sets
       @field_mappings     = mappings_init(field_mappings)
+      @extract_compounds  = extract_compounds
       @record_transformer = record_transformer
     end
 
     def records
-      cdm_records.map { |record| to_solr(record) }.compact
+      raw_records.map { |record| to_solr(record) }.compact
     end
 
+
     private
+
+    def raw_records
+      extract_compounds == false ? cdm_records : cdm_records.concat(compounds)
+    end
+
+    # The 'page' key holds the children of a given record
+    def compounds
+      # Get all the records with compounds
+      cdm_records.reject do |record|
+        record['page'].nil?
+        # Get just the compound data
+      end.map do |record|
+        record['page'].map do |page|
+          # Associate each compound child with its parent
+          page.merge!('parent_id' => record['id'], 'record_type' => 'secondary')
+        end
+      end.flatten
+    end
 
     def mappings_init(mappings)
         (mappings) ? mappings : self.class.default_mappings
