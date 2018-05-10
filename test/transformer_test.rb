@@ -11,7 +11,8 @@ module CDMBL
         {dest_path: 'id', origin_path: 'id', formatters: [StripFormatter, IDFormatter]},
         {dest_path: 'compound_objects_ts', origin_path: 'page', formatters: [ToJsonFormatter]},
         {dest_path: 'transcription_tesi', origin_path: 'transc', formatters: [StripFormatter]},
-        {dest_path: 'record_type', origin_path: 'record_type', formatters: []}
+        {dest_path: 'record_type', origin_path: 'record_type', formatters: []},
+        {dest_path: 'parent_id', origin_path: 'parent_id', formatters: []}
       ]
     }
 
@@ -82,7 +83,7 @@ module CDMBL
             transformation = Transformer.new(cdm_records: records, extract_compounds: true, field_mappings: field_mappings).records
             transformation.must_equal([
               {"id"=>"foo:5123", "compound_objects_ts"=>"[{\"id\":\"blah/3245\",\"transc\":\"OHAI CHEEZEBURGER\",\"parent_id\":\"foo/5123\",\"record_type\":\"secondary\"}]","record_type"=>"primary"},
-              {"id"=>"blah:3245", "transcription_tesi"=>"OHAI CHEEZEBURGER","record_type"=>"secondary"}
+              {"id"=>"blah:3245", "transcription_tesi"=>"OHAI CHEEZEBURGER","record_type"=>"secondary","parent_id"=>"foo/5123"}
             ])
         end
       end
