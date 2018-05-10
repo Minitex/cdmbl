@@ -146,11 +146,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/UMNLib
 
 [MIT](/LICENSE.txt)
 
-## Roadmap
+## TODO
 
-CDMBL could be expanded to include some features from the [MDL](https://github.com/UMNLibraries/mdl_search) project (and be converted intoto a Rails Engine):
-
-* Asyncronous thumbnail caching (e.g. https://github.com/UMNLibraries/mdl_search/blob/master/app/controllers/catalog_controller.rb#L34)
-* A (very simple) model to keep track of indexing runs (used like this: https://github.com/UMNLibraries/mdl_search/blob/master/lib/tasks/ingester.rake#L6)
-* A template to over-write the standard BL catalog controller to make use of the CDM solr fields?
-* The [react-borealis viewer](https://github.com/UMNLibraries/react-borealis)
+* Make StripFormatter the default formatter so it doesn't need to be declared for every field
+* Re-brand project: CONTENTdm Indexer. CDMBL doesn't necessarily require Blacklight. Moreover only handles indexing.
