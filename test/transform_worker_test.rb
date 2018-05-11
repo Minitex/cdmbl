@@ -67,7 +67,8 @@ module CDMBL
                                      { blah: 'blah1' }
                                    ],
                                    oai_sets: sets_keyed,
-                                   field_mappings: field_mappings
+                                   field_mappings: field_mappings,
+                                   extract_compounds: false
                                  }
                                ]
       transformer_klass_object.expect :records, transformed_records, []
@@ -92,7 +93,8 @@ module CDMBL
                      solr_config,
                      cdm_endpoint,
                      oai_endpoint,
-                     field_mappings)
+                     field_mappings,
+                     false)
       oai_request_klass.verify
       oai_set_lookup_klass.verify
       cdm_api_klass.verify

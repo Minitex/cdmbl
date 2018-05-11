@@ -6,7 +6,8 @@ module CDMBL
                 :solr_config,
                 :cdm_endpoint,
                 :oai_endpoint,
-                :field_mappings
+                :field_mappings,
+                :extract_compounds
 
     attr_writer :cdm_api_klass,
                   :oai_request_klass,
@@ -19,14 +20,15 @@ module CDMBL
                 solr_config,
                 cdm_endpoint,
                 oai_endpoint,
-                field_mappings)
+                field_mappings,
+                extract_compounds)
 
-      @identifiers    = identifiers
-      @solr_config    = solr_config
-      @cdm_endpoint   = cdm_endpoint
-      @oai_endpoint   = oai_endpoint
-      @field_mappings = field_mappings
-
+      @identifiers       = identifiers
+      @solr_config       = solr_config
+      @cdm_endpoint      = cdm_endpoint
+      @oai_endpoint      = oai_endpoint
+      @field_mappings    = field_mappings
+      @extract_compounds = extract_compounds
       transform_and_load!
     end
 
@@ -64,7 +66,8 @@ module CDMBL
       @transformation ||=
         transformer_klass.new(cdm_records: records,
                               oai_sets: set_lookup,
-                              field_mappings: field_mappings).records
+                              field_mappings: field_mappings,
+                              extract_compounds: extract_compounds).records
     end
 
     def set_lookup

@@ -11,6 +11,7 @@ module CDMBL
                 :cdm_endpoint,
                 :oai_endpoint,
                 :field_mappings,
+                :extract_compounds,
                 :resumption_token,
                 :set_spec,
                 :max_compounds,
@@ -28,16 +29,17 @@ module CDMBL
       # Sidekiq stores params in JSON, so we can't inject dependencies. This
       # results in the long set of arguments that follows. Otherwise, we'd
       # simply inject the OAI request and extractor objects
-      @config           = config
-      @solr_config      = config.fetch('solr_config').symbolize_keys
-      @cdm_endpoint     = config.fetch('cdm_endpoint')
-      @oai_endpoint     = config.fetch('oai_endpoint')
-      @field_mappings   = config.fetch('field_mappings', false)
-      @resumption_token = config.fetch('resumption_token', nil)
-      @set_spec         = config.fetch('set_spec', nil)
-      @max_compounds    = config.fetch('max_compounds', 10)
-      @batch_size       = config.fetch('batch_size', 5).to_i
-      @is_recursive     = config.fetch('is_recursive', true)
+      @config            = config
+      @solr_config       = config.fetch('solr_config').symbolize_keys
+      @cdm_endpoint      = config.fetch('cdm_endpoint')
+      @oai_endpoint      = config.fetch('oai_endpoint')
+      @field_mappings    = config.fetch('field_mappings', false)
+      @extract_compounds = config.fetch('extract_compounds', false)
+      @resumption_token  = config.fetch('resumption_token', nil)
+      @set_spec          = config.fetch('set_spec', nil)
+      @max_compounds     = config.fetch('max_compounds', 10)
+      @batch_size        = config.fetch('batch_size', 5).to_i
+      @is_recursive      = config.fetch('is_recursive', true)
       extract_batch!
       next_batch!
     end
@@ -112,11 +114,12 @@ module CDMBL
     end
 
     def transform!(ids)
-        transform_worker_klass.perform_async(ids,
-                                             solr_config,
-                                             cdm_endpoint,
-                                             oai_endpoint,
-                                             field_mappings)
+      transform_worker_klass.perform_async(ids,
+                                           solr_config,
+                                           cdm_endpoint,
+                                           oai_endpoint,
+                                           field_mappings,
+                                           extract_compounds)
     end
 
     def delete_deletables!
