@@ -83,6 +83,7 @@ module CDMBL
                                       config['solr_config'],
                                       'http://example.com',
                                       'http://example.com1',
+                                      false,
                                       false
                                     ]
       transform_worker_klass.expect :perform_async,
@@ -92,6 +93,7 @@ module CDMBL
                                       config['solr_config'],
                                       'http://example.com',
                                       'http://example.com1',
+                                      false,
                                       false
                                     ]
       transform_worker_klass.expect :perform_async,
@@ -101,6 +103,7 @@ module CDMBL
                                       config['solr_config'],
                                       'http://example.com',
                                       'http://example.com1',
+                                      false,
                                       false
                                     ]
       transform_worker_klass.expect :perform_async,
@@ -109,6 +112,7 @@ module CDMBL
                                       [9],
                                       config['solr_config'],
                                       'http://example.com', 'http://example.com1',
+                                      false,
                                       false
                                     ]
       worker = ETLWorker.new
