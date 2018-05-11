@@ -1,7 +1,7 @@
 module CDMBL
-    # Takes a list of record id/collection data, uses CompoundLookup to
-    # identifiy records with large numbers of compounds and sorts them
-    # into a large and a small heap
+  # Takes a list of record id/collection data, uses CompoundLookup to
+  # identifiy records with large numbers of compounds and sorts them
+  # into a large and a small heap
   class CompoundFilter
     attr_reader :record_ids,
                 :max_compounds,
@@ -28,7 +28,7 @@ module CDMBL
     end
 
     def records
-     @records ||= record_ids.map do |identifier|
+      @records ||= record_ids.map do |identifier|
         {
           large: count(*identifier) >= max_compounds,
           id: identifier
