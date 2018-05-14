@@ -2,20 +2,19 @@ require 'hash_at_path'
 
 module CDMBL
   class FieldTransformer
-    attr_reader :field_value, :dest_path, :formatters, :formatter_klass
-    def initialize(origin_path: '',
-                   dest_path: '',
+    extend Forwardable
+    def_delegators :@field_mapping, :origin_path, :dest_path, :formatters
+    attr_reader :field_value, :field_mapping, :formatter_klass
+    def initialize(field_mapping: FieldMapping.new,
                    record: {},
-                   formatters: [],
                    formatter_klass: FieldFormatter)
+      @field_mapping   = field_mapping
       @field_value     = compact(record.at_path(origin_path))
-      @dest_path       = dest_path
-      @formatters      = (!formatters.nil?) ? formatters : [DefaultFormatter]
       @formatter_klass = formatter_klass
     end
 
     def reduce
-      (blank?(value)) ? {} : { "#{dest_path}" => value } 
+      (blank?(value)) ? {} : { "#{dest_path}" => value }
     end
 
     def value

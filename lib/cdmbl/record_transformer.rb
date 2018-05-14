@@ -10,20 +10,16 @@ module CDMBL
     end
 
     def transform!
-      field_mappings.inject({}) do |dest_record, mapping|
-        dest_record.merge(transform_field(record, mapping))
+      field_mappings.inject({}) do |dest_record, field_mapping|
+        dest_record.merge(transform_field(record, field_mapping))
       end
     end
 
     private
 
-    def transform_field(record, mapping)
-      field_transformer.new(origin_path: mapping[:origin_path],
-                            dest_path: mapping[:dest_path],
-                            formatters: mapping[:formatters],
+    def transform_field(record, field_mapping)
+      field_transformer.new(field_mapping: field_mapping,
                             record: record).reduce
     end
-    
-   
   end
 end

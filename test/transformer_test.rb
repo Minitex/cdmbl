@@ -23,7 +23,13 @@ module CDMBL
                     'audio' => '0_eenv',
                     'video' => '0_w3vvA'
                 }]
-      transformation = Transformer.new(cdm_records: records).records.first
+      field_mappings = [
+        {dest_path: 'kaltura_audio_ssi', origin_path: 'audio', formatters: [StripFormatter]},
+        {dest_path: 'kaltura_audio_playlist_ssi', origin_path: 'audioa', formatters: [StripFormatter]},
+        {dest_path: 'kaltura_video_ssi', origin_path: 'video', formatters: [StripFormatter]},
+        {dest_path: 'kaltura_video_playlist_ssi', origin_path: 'videoa', formatters: [StripFormatter]}
+      ]
+      transformation = Transformer.new(cdm_records: records, field_mappings: field_mappings).records.first
       transformation['kaltura_audio_ssi'].must_equal '0_eenv'
       transformation['kaltura_video_ssi'].must_equal '0_w3vvA'
       transformation['kaltura_audio_playlist_ssi'].must_equal '0_sdfsdf'
@@ -34,19 +40,24 @@ module CDMBL
               'id' => 'foo/123',
               'table' => "First Item; Second Item; \nThird Item"
           }]
-      transformation = Transformer.new(cdm_records: records).records.first
+      field_mappings = [
+        {dest_path: 'table_ssim', origin_path: 'table', formatters: [StripFormatter, SplitFormatter, StripFormatter]}
+      ]
+      transformation = Transformer.new(cdm_records: records, field_mappings: field_mappings).records.first
       transformation['table_ssim'].must_equal ["First Item", "Second Item", "Third Item"]
     end
 
     it "enriches from GeoNames service" do
-      records = [{
+        records = [{
                     'id' => 'foo/123',
                     'geonam' => 'http://sws.geonames.org/5024729/'
                 }]
-        transformation = Transformer.new(cdm_records: records).records.first
+        field_mappings = [
+          {dest_path: 'coordinates_llsi', origin_path: 'geonam', formatters: [GeoNameID, GeoNameIDToJson, GeoNameToLocation]},
+          {dest_path: 'placename_ssim', origin_path: 'geonam', formatters: [GeoNameID, GeoNameIDToJson, GeoNameToPlaceName]}
+        ]
+        transformation = Transformer.new(cdm_records: records, field_mappings: field_mappings).records.first
         transformation['coordinates_llsi'].must_equal '46.78111,-92.11806'
-
-        transformation = Transformer.new(cdm_records: records).records.first
         transformation['placename_ssim'].must_equal ["City of Duluth", "Saint Louis County"]
     end
 
@@ -57,11 +68,13 @@ module CDMBL
                     'specif' => 'Hennepin County',
                     'subjec' => 'Bar'
                 }]
-        transformation = Transformer.new(cdm_records: records).records.first
+
+        field_mappings = [
+          {dest_path: 'keyword_ssim', origin_path: '/', formatters: [KeywordFormatter, Titlieze, UniqueFormatter, StripFormatter]}
+        ]
+        transformation = Transformer.new(cdm_records: records, field_mappings: field_mappings).records.first
         transformation['keyword_ssim'].must_equal ["Bar", "Hennepin County", "Lakes", "Minnesota"]
     end
-
-
 
     describe 'when a record is a compound' do
       describe 'and extract_compounds is unset' do
