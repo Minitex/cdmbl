@@ -103,6 +103,7 @@ module CDMBL
 
   class StripFormatter
     def self.format(values)
+      return '' if values.nil?
       if values.respond_to?(:map)
         values.map {|value| value.strip }
       else
