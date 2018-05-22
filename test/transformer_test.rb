@@ -3,7 +3,7 @@ require 'test_helper'
 module CDMBL
 
   describe Transformer do
-    let(:cdm_records) { [{'title' => 'The Three-Body Problem'}] }
+    let(:cdm_records) { [{'title' => 'The Three-Body Problem', 'id' => 'foo:123'}] }
     let(:record_transformer) { Minitest::Mock.new }
     let(:record_transformer_object) { Minitest::Mock.new }
     let(:field_mappings) {
@@ -15,6 +15,13 @@ module CDMBL
         {dest_path: 'parent_id', origin_path: 'parent_id', formatters: []}
       ]
     }
+
+    describe 'when not given a field mapping' do
+      it 'uses the default field mappings' do
+        records = Transformer.new(cdm_records: cdm_records).records
+        records.must_equal [{"id"=>"foo:123", "setspec_ssi"=>"foo:123", "title_tesi"=>"The Three-Body Problem", "title_ssi"=>"The Three-Body Problem", "title_sort"=>"The Three-Body Problem", "title_unstem_search"=>"The Three-Body Problem", "record_type_ssi"=>"primary"}]
+      end
+    end
 
     it "transforms kaltura media metadata" do
       records = [{
@@ -58,7 +65,7 @@ module CDMBL
         ]
         transformation = Transformer.new(cdm_records: records, field_mappings: field_mappings).records.first
         transformation['coordinates_llsi'].must_equal '46.78111,-92.11806'
-        transformation['placename_ssim'].must_equal ["City of Duluth", "Saint Louis County"]
+        transformation['placename_ssim'].must_equal ["City of Duluth", "Saint Louis"]
     end
 
     it "creates a composite keyword field" do
@@ -101,7 +108,5 @@ module CDMBL
         end
       end
     end
-
-
   end
 end
