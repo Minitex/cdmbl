@@ -34,6 +34,8 @@ module CDMBL
 
     def transform_field
       formatter_klass.new(value: field_value, formatters: formatters).format!
+    rescue StandardError => e
+      raise "Mapping Error:#{field_mapping.config} Error:#{e.message}"
     end
   end
 end
