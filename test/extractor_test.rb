@@ -213,5 +213,13 @@ module CDMBL
       oai_filter_klass.verify
       oai_filter_klass_object.verify
     end
+
+    describe 'when a collection is empty or doesn\'t exist' do
+      it 'returns an emtpy identifier list' do
+        Extractor.new(oai_endpoint: 'http://cdm16022.contentdm.oclc.org/oai/oai.php',
+          set_spec: 'sdffsddsfhldfshldfshjdfshjkdfshjlkdfshljkdfshljkfds')
+            .local_identifiers.must_equal([])
+      end
+    end
   end
 end
