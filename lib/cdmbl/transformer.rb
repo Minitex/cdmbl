@@ -39,9 +39,9 @@ module CDMBL
         record['page'].nil?
         # Get just the compound data
       end.map do |record|
-        record['page'].map do |page|
+        record['page'].each_with_index.map do |page, i|
           # Associate each compound child with its parent
-          page.merge!('parent_id' => record['id'], 'record_type' => 'secondary')
+          page.merge!('parent_id' => record['id'], 'record_type' => 'secondary', 'child_index' => i)
         end
       end.flatten
     end
@@ -173,7 +173,8 @@ module CDMBL
         {dest_path: 'placename_ssim', origin_path: 'geonam', formatters: [GeoNameID, GeoNameIDToJson, GeoNameToPlaceName]},
         {dest_path: 'placename_unstem_search', origin_path: 'geonam', formatters: [GeoNameID, GeoNameIDToJson, GeoNameToPlaceName]},
         {dest_path: 'table_ssim', origin_path: 'table', formatters: [StripFormatter, SplitFormatter, StripFormatter]},
-        {dest_path: 'umedia_ssi', origin_path: 'umedia', formatters: [StripFormatter]}
+        {dest_path: 'umedia_ssi', origin_path: 'umedia', formatters: [StripFormatter]},
+        {dest_path: 'child_index', origin_path: 'child_index', formatters: []}
       ]
     end
   end

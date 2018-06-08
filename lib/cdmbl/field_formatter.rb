@@ -10,5 +10,4 @@ module CDMBL
       formatters.reduce(value) { |memo, formatter| formatter.format(memo) }
     end
   end
-
 end

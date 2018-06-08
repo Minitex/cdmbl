@@ -12,7 +12,8 @@ module CDMBL
         {dest_path: 'compound_objects_ts', origin_path: 'page', formatters: [ToJsonFormatter]},
         {dest_path: 'transcription_tesi', origin_path: 'transc', formatters: [StripFormatter]},
         {dest_path: 'record_type', origin_path: 'record_type', formatters: []},
-        {dest_path: 'parent_id', origin_path: 'parent_id', formatters: []}
+        {dest_path: 'parent_id', origin_path: 'parent_id', formatters: []},
+        {dest_path: 'child_index', origin_path: 'child_index', formatters: []}
       ]
     }
 
@@ -98,12 +99,13 @@ module CDMBL
         it "simply uses the records provided" do
           records = [{
                         'id' => 'foo/5123',
-                        'page' => [{'id' => 'blah/3245', 'transc' => 'OHAI CHEEZEBURGER'}]
+                        'page' => [{'id' => 'blah/3245', 'transc' => 'OHAI CHEEZEBURGER'}, {'id' => 'blah/3248', 'transc' => 'OHAI CHEEZEBURGER 1'}]
                     }]
             transformation = Transformer.new(cdm_records: records, extract_compounds: true, field_mappings: field_mappings).records
             transformation.must_equal([
-              {"id"=>"foo:5123", "compound_objects_ts"=>"[{\"id\":\"blah/3245\",\"transc\":\"OHAI CHEEZEBURGER\",\"parent_id\":\"foo/5123\",\"record_type\":\"secondary\"}]","record_type"=>"primary"},
-              {"id"=>"blah:3245", "transcription_tesi"=>"OHAI CHEEZEBURGER","record_type"=>"secondary","parent_id"=>"foo/5123"}
+              {"id"=>"foo:5123", "compound_objects_ts"=>"[{\"id\":\"blah/3245\",\"transc\":\"OHAI CHEEZEBURGER\",\"parent_id\":\"foo/5123\",\"record_type\":\"secondary\",\"child_index\":0},{\"id\":\"blah/3248\",\"transc\":\"OHAI CHEEZEBURGER 1\",\"parent_id\":\"foo/5123\",\"record_type\":\"secondary\",\"child_index\":1}]","record_type"=>"primary"},
+              {"id"=>"blah:3245", "transcription_tesi"=>"OHAI CHEEZEBURGER","record_type"=>"secondary","parent_id"=>"foo/5123", "child_index" => 0},
+              {"id"=>"blah:3248", "transcription_tesi"=>"OHAI CHEEZEBURGER 1","record_type"=>"secondary","parent_id"=>"foo/5123", "child_index" => 1}
             ])
         end
       end
