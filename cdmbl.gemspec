@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['chadfennell']
   spec.email         = ['fenne035@umn.edu']
 
-  spec.summary       = %q{Load CONTENTdm data into a Solr index.}
+  spec.summary       = %q{Load CONTENTdm data into a Solr Index. CDMBL expects to run inside a Rails application.}
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'sidekiq', '>= 3.5'
   spec.add_dependency 'titleize', '~> 1.4'
   spec.add_dependency 'rsolr', '~> 2.0'
-  # This gem generally wants to be in a rails app, but just to avoid adding
+  # CDMBL expects to run in a rails app, but just to avoid adding
   # another external dependency for XML procssing, we rely on activesupport's
   # Has.to_jsonl feature for testing and to allow this gem to function
   # independently from a rails app
