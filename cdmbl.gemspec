@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['chadfennell']
   spec.email         = ['fenne035@umn.edu']
 
-  spec.summary       = %q{Use Blacklight (Solr) as a front end for your CONTENTdm instance.}
+  spec.summary       = %q{Load CONTENTdm data into a Solr index.}
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
