@@ -103,10 +103,9 @@ module CDMBL
                     }]
             transformation = Transformer.new(cdm_records: records, extract_compounds: true, field_mappings: field_mappings).records
             transformation.must_equal([
-              {"id"=>"foo:5123", "compound_objects_ts"=>"[{\"id\":\"blah/3245\",\"transc\":\"OHAI CHEEZEBURGER\",\"parent_id\":\"foo/5123\",\"record_type\":\"secondary\",\"child_index\":0},{\"id\":\"blah/3248\",\"transc\":\"OHAI CHEEZEBURGER 1\",\"parent_id\":\"foo/5123\",\"record_type\":\"secondary\",\"child_index\":1}]","record_type"=>"primary"},
-              {"id"=>"blah:3245", "transcription_tesi"=>"OHAI CHEEZEBURGER","record_type"=>"secondary","parent_id"=>"foo/5123", "child_index" => 0},
-              {"id"=>"blah:3248", "transcription_tesi"=>"OHAI CHEEZEBURGER 1","record_type"=>"secondary","parent_id"=>"foo/5123", "child_index" => 1}
-            ])
+              {"id"=>"foo:5123", "compound_objects_ts"=>"[{\"id\":\"blah/3245\",\"transc\":\"OHAI CHEEZEBURGER\",\"parent_id\":\"foo/5123\",\"parent\":{\"id\":\"foo/5123\",\"record_type\":\"primary\"},\"record_type\":\"secondary\",\"child_index\":0},{\"id\":\"blah/3248\",\"transc\":\"OHAI CHEEZEBURGER 1\",\"parent_id\":\"foo/5123\",\"parent\":{\"id\":\"foo/5123\",\"record_type\":\"primary\"},\"record_type\":\"secondary\",\"child_index\":1}]", "record_type"=>"primary"},
+              {"id"=>"blah:3245", "transcription_tesi"=>"OHAI CHEEZEBURGER", "record_type"=>"secondary", "parent_id"=>"foo/5123", "child_index"=>0},
+              {"id"=>"blah:3248", "transcription_tesi"=>"OHAI CHEEZEBURGER 1", "record_type"=>"secondary", "parent_id"=>"foo/5123", "child_index"=>1}])
         end
       end
     end

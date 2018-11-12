@@ -41,7 +41,9 @@ module CDMBL
       end.map do |record|
         record['page'].each_with_index.map do |page, i|
           # Associate each compound child with its parent
-          page.merge!('parent_id' => record['id'], 'record_type' => 'secondary', 'child_index' => i)
+          page.merge!('parent_id' => record['id'],
+                      'parent' => record.except('page'),
+                      'record_type' => 'secondary', 'child_index' => i)
         end
       end.flatten
     end
