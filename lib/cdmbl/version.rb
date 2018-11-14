@@ -1,3 +1,3 @@
 module CDMBL
-  VERSION = "0.12.9"
+  VERSION = "0.13.0"
 end
