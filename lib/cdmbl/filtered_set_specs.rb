@@ -12,23 +12,23 @@ module CDMBL
 
     def initialize(oai_base_url: :missing_oai_base_url,
                    oai_client: OaiClient,
-                   callback: DefaultSetFilterCallback.new)
+                   callback: CDMBL::DefaultSetFilterCallback.new)
       @oai_base_url = oai_base_url
       @oai_client   = oai_client
       @callback     = callback
     end
 
     def set_specs
-      filtered.map {|set| set['setSpec']}
+      filtered_sets.map { |set| set['setSpec'] }
     end
 
-    private
-
-    def filtered
-      sets.select do |set|
+    def filtered_sets
+      @filtered_sets ||= sets.select do |set|
         callback.valid?(set: set)
       end
     end
+
+    private
 
     def sets
       @sets ||= list_sets['OAI_PMH']['ListSets']['set']

@@ -20,11 +20,12 @@ module CDMBL
       filter_set_callback.expect(:valid?, true, [{:set => sets.first}])
       filter_set_callback.expect(:valid?, true, [{:set => sets.last}])
 
-      set_specs = FilteredSetSpecs.new(oai_base_url: oai_base_url,
+      filtered = FilteredSetSpecs.new(oai_base_url: oai_base_url,
                                        callback: filter_set_callback,
-                                       oai_client: oai_client).set_specs
-      expect(set_specs).must_equal ["fooBar", "fooBan"]
+                                       oai_client: oai_client)
 
+      expect(filtered.set_specs).must_equal ["fooBar", "fooBan"]
+      expect(filtered.filtered_sets).must_equal [{"setSpec"=>"fooBar", "setName"=>"Blah Collection of Blah"}, {"setSpec"=>"fooBan", "setName"=>"Blah Collection of Blas"}]
     end
   end
 end
