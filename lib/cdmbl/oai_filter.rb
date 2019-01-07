@@ -11,7 +11,7 @@ module CDMBL
     end
 
     def deletable_ids
-      deletables.map { |deletable| deletable.join('/')}
+      deletables.map { |deletable| deletable.join(':')}
     end
 
     private

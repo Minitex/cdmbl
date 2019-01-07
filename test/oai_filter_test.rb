@@ -10,7 +10,7 @@ module CDMBL
     end
     it 'returns all deleted records' do
       filter = OAIFilter.new(headers: headers)
-      filter.deletable_ids.must_equal ["swede/0", "swede/1", "swede/2", "swede/7", "swede/16", "swede/19", "swede/20", "swede/21", "swede/24", "swede/25", "swede/28", "swede/29", "swede/30", "swede/31", "swede/44", "swede/46", "swede/48", "swede/51", "swede/52", "swede/54", "swede/56", "swede/59", "swede/60", "swede/64", "swede/68", "swede/70", "swede/73", "swede/76", "swede/78"]
+      filter.deletable_ids.must_equal ["swede:0", "swede:1", "swede:2", "swede:7", "swede:16", "swede:19", "swede:20", "swede:21", "swede:24", "swede:25", "swede:28", "swede:29", "swede:30", "swede:31", "swede:44", "swede:46", "swede:48", "swede:51", "swede:52", "swede:54", "swede:56", "swede:59", "swede:60", "swede:64", "swede:68", "swede:70", "swede:73", "swede:76", "swede:78"]
       filter.deletable_ids.length.must_equal 29
     end
 
