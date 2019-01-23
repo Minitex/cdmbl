@@ -1,10 +1,12 @@
+
 require 'json'
+require 'http'
 module CDMBL
     class OaiClient
-      attr_reader :base_url, :http_client
-      def initialize(base_url: '', http_client: Net::HTTP)
+      attr_reader :base_url, :client
+      def initialize(base_url: '', client: HTTP)
         @base_url    = base_url
-        @http_client = http_client
+        @client = client
       end
 
       def request(query)
@@ -14,7 +16,7 @@ module CDMBL
       private
 
       def get(url)
-        http_client.get_response(URI(url)).body
+        client.get(url).to_s
       end
 
       def hashify(xml)

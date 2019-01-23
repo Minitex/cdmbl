@@ -1,6 +1,5 @@
 require 'test_helper'
 require 'sidekiq/testing'
-require 'webmock/minitest'
 Sidekiq::Testing.fake!
 
 module CDMBL

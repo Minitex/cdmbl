@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'hash_at_path', '~> 0.1'
-  spec.add_dependency 'contentdm_api', '~> 0.3.11'
+  spec.add_dependency 'contentdm_api', '~> 0.4.1'
   spec.add_dependency 'sidekiq', '>= 3.5'
   spec.add_dependency 'titleize', '~> 1.4'
   spec.add_dependency 'rsolr', '~> 2.0'
@@ -32,6 +32,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 12.0'
   spec.add_development_dependency 'minitest', '~> 5.0'
   spec.add_development_dependency 'yard', '~> 0.9.0'
-  spec.add_development_dependency 'webmock', '~> 1.24', '>= 1.24.0'
-  spec.add_development_dependency 'vcr', '~> 3.0', '>= 3.0.1'
 end

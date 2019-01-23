@@ -1,6 +1,24 @@
 require 'cdmbl'
 
 namespace :cdmbl do
+
+
+
+  desc 'Ingest a Collection Syncronously'
+  task :collection_sync do
+    # config = etl.config
+    # raise etl.config.keys.inspect
+    CDMBL::ETLWorker.new.perform(
+      'solr_config' => {:url=>"http://solr:8983/solr/mdl-1"},
+      'oai_endpoint' => 'http://cdm16022.contentdm.oclc.org/oai/oai.php',
+      'cdm_endpoint' => 'https://server16022.contentdm.oclc.org/dmwebservices/index.php',
+      'set_spec' => 'mpls',
+      'batch_size' => 10,
+      'max_compounds' => 10
+    )
+  end
+
+
   desc 'Launch a background job to index metadata from CONTENTdm to Solr.'
   task :batch, [
     :solr_url,
