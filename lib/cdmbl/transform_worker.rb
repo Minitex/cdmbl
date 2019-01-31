@@ -90,7 +90,9 @@ module CDMBL
 
     def sets
       @oai_request ||=
-        oai_request_klass.new(base_uri: oai_endpoint).sets
+        Rails.cache.fetch("cdmbl_set_specs", expires_in: 10.minutes) do
+          oai_request_klass.new(base_uri: oai_endpoint).sets
+        end
     end
   end
 end
