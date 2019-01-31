@@ -3,6 +3,7 @@ module CDMBL
   # Load Records into a solr index
   class LoadWorker
     include Sidekiq::Worker
+    sidekiq_options queue: 'critical'
     attr_reader :solr_config, :records, :deletables
     attr_writer :loader_klass, :solr_klass
     def perform(records = [], deletables = [], solr_config = {})
