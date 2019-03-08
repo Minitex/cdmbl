@@ -14,6 +14,7 @@ module CDMBL
     let(:transformer_klass) { Minitest::Mock.new }
     let(:transformer_klass_object) { Minitest::Mock.new }
     let(:load_worker_klass)  { Minitest::Mock.new }
+    let(:cache_klass)  { Minitest::Mock.new }
     let(:identifiers) { [['coll1', 1], ['coll1', 2]] }
     let(:solr_config) { { foo: 'bar' } }
     let(:cdm_endpoint) { 'http://example.com1' }
@@ -27,13 +28,9 @@ module CDMBL
     let(:deletable_ids) { [9, 10, 2] }
 
     it 'extracts data from OAI' do
-      oai_request_klass.expect :new,
-                               oai_request_klass_object,
-                               [{base_uri: oai_endpoint}]
-      oai_request_klass_object.expect :sets, sets, []
       oai_set_lookup_klass.expect :new,
                                   oai_set_lookup_klass_object,
-                                  [{ oai_sets: sets }]
+                                  [{:oai_sets=>"blah"}]
       oai_set_lookup_klass_object.expect :keyed, sets_keyed, []
       cdm_api_klass.expect :new,
                            cdm_api_klass_object,
@@ -79,13 +76,15 @@ module CDMBL
                                  solr_config
                                ]
 
+      cache_klass.expect :cache, { 'cdmbl_set_specs' => 'blah' }, []
+
       worker = TransformWorker.new
-      worker.oai_request_klass = oai_request_klass
       worker.oai_set_lookup_klass = oai_set_lookup_klass
       worker.cdm_api_klass = cdm_api_klass
       worker.cdm_notification_klass = cdm_notification_klass
       worker.transformer_klass = transformer_klass
       worker.load_worker_klass = load_worker_klass
+      worker.cache_klass = cache_klass
 
       # Run the extractor worker
       worker.perform(identifiers,
@@ -94,13 +93,13 @@ module CDMBL
                      oai_endpoint,
                      field_mappings,
                      false)
-      oai_request_klass.verify
       oai_set_lookup_klass.verify
       cdm_api_klass.verify
       cdm_notification_klass.verify
       transformer_klass.verify
       transformer_klass.verify
       load_worker_klass.verify
+      cache_klass.verify
     end
   end
 end

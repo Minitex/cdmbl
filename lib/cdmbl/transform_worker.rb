@@ -10,11 +10,12 @@ module CDMBL
                 :extract_compounds
 
     attr_writer :cdm_api_klass,
-                  :oai_request_klass,
-                  :oai_set_lookup_klass,
-                  :cdm_notification_klass,
-                  :load_worker_klass,
-                  :transformer_klass
+                :oai_request_klass,
+                :oai_set_lookup_klass,
+                :cdm_notification_klass,
+                :load_worker_klass,
+                :transformer_klass,
+                :cache_klass
 
     def perform(identifiers,
                 solr_config,
@@ -56,6 +57,10 @@ module CDMBL
       @load_worker_klass ||= LoadWorker
     end
 
+    def cache_klass
+      @cache_klass ||= Rails
+    end
+
     private
 
     def transform_and_load!
@@ -90,7 +95,7 @@ module CDMBL
 
     def sets
       @oai_request ||=
-        Rails.cache.fetch("cdmbl_set_specs", expires_in: 10.minutes) do
+        cache_klass.cache.fetch("cdmbl_set_specs", expires_in: 10.minutes) do
           oai_request_klass.new(base_uri: oai_endpoint).sets
         end
     end
