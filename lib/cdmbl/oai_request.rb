@@ -7,16 +7,16 @@ module CDMBL
   # extra value to their data with a keyed set lookup, filters for deleted
   # and non-deleted records
   class OaiRequest
-    attr_reader :uri,
+    attr_reader :endpoint_url,
                 :resumption_token,
                 :client,
                 :set_spec
 
-    def initialize(uri: '',
+    def initialize(endpoint_url: '',
                    resumption_token: nil,
                    set_spec: nil,
                    client: Net::HTTP)
-      @uri              = uri
+      @endpoint_url     = endpoint_url
       @resumption_token = resumption_token
       @client           = client
       @set_spec         = set_spec ? "&set=#{set_spec}" : ''
@@ -32,7 +32,7 @@ module CDMBL
 
     def sets
       # Ensure a result of one set is still an array
-      @sets ||= force_array request(sets_uri).at_path('OAI_PMH/ListSets/set')
+      @sets ||= force_array request(sets_endpoint_url).at_path('OAI_PMH/ListSets/set')
     end
 
     def set_lookup
@@ -76,19 +76,19 @@ module CDMBL
 
     def identifier_request
       @identifier_request ||=
-        resumption_token ? request(batch_uri) : request(first_batch_uri)
+        resumption_token ? request(batch_endpoint_url) : request(first_batch_endpoint_url)
     end
 
-    def first_batch_uri
-      "#{uri}?verb=ListIdentifiers&metadataPrefix=oai_dc#{set_spec}"
+    def first_batch_endpoint_url
+      "#{endpoint_url}?verb=ListIdentifiers&metadataPrefix=oai_dc#{set_spec}"
     end
 
-    def batch_uri
-      "#{uri}?verb=ListIdentifiers&resumptionToken=#{resumption_token}"
+    def batch_endpoint_url
+      "#{endpoint_url}?verb=ListIdentifiers&resumptionToken=#{resumption_token}"
     end
 
-    def sets_uri
-      "#{uri}?verb=ListSets"
+    def sets_endpoint_url
+      "#{endpoint_url}?verb=ListSets"
     end
 
     def request(location)

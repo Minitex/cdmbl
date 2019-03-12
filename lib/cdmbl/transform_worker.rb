@@ -2,51 +2,37 @@ require 'sidekiq'
 module CDMBL
   class TransformWorker
     include Sidekiq::Worker
-    attr_reader :identifiers,
+    attr_reader :records,
                 :solr_config,
                 :cdm_endpoint,
                 :oai_endpoint,
                 :field_mappings,
-                :extract_compounds
+                :batch_size
 
-    attr_writer :cdm_api_klass,
-                :oai_request_klass,
-                :oai_set_lookup_klass,
-                :cdm_notification_klass,
+    attr_writer :cdm_item_klass,
                 :load_worker_klass,
                 :transformer_klass,
-                :cache_klass
+                :transformer_worker_klass
 
-    def perform(identifiers,
+    def perform(records,
                 solr_config,
                 cdm_endpoint,
                 oai_endpoint,
                 field_mappings,
-                extract_compounds)
+                batch_size)
 
-      @identifiers       = identifiers
+      @records           = records
       @solr_config       = solr_config
       @cdm_endpoint      = cdm_endpoint
       @oai_endpoint      = oai_endpoint
       @field_mappings    = field_mappings
-      @extract_compounds = extract_compounds
+      @batch_size        = batch_size
       transform_and_load!
+      transform_and_load_compounds!
     end
 
-    def oai_set_lookup_klass
-      @oai_set_lookup_klass ||= OAISetLookup
-    end
-
-    def oai_request_klass
-      @oai_request_klass ||= OaiRequest
-    end
-
-    def cdm_api_klass
-      @cdm_api_klass ||= CONTENTdmAPI::Item
-    end
-
-    def cdm_notification_klass
-      @cdm_notification_klass ||= CdmNotification
+    def cdm_item_klass
+      @cdm_item_klass ||= CdmItem
     end
 
     def transformer_klass
@@ -57,47 +43,52 @@ module CDMBL
       @load_worker_klass ||= LoadWorker
     end
 
-    def cache_klass
-      @cache_klass ||= Rails
+    def transformer_worker_klass
+      @transformer_worker_klass ||= TransformerWorker
     end
 
     private
+
+    # Recursivly call the transformer_worker with all the the compound
+    # data we have collected in the first pass
+    def transform_and_load_compounds!
+      compound_records.each_slice(batch_size) do |compound_records_batch|
+        transformer_worker_klass.perform_async(
+          compound_records_batch,
+          solr_config,
+          cdm_endpoint,
+          oai_endpoint,
+          field_mappings,
+          batch_size
+        )
+      end
+    end
 
     def transform_and_load!
       load_worker_klass.perform_async(transformed_records, [], solr_config)
     end
 
-    def transformed_records
-      @transformation ||=
-        transformer_klass.new(cdm_records: records,
-                              oai_sets: set_lookup,
-                              field_mappings: field_mappings,
-                              extract_compounds: extract_compounds).records
+    def compound_records
+      cmd_items.map(&:page).flatten
     end
 
-    def set_lookup
-      oai_set_lookup_klass.new(oai_sets: sets).keyed
-    end
-
-    def records
-      identifiers.map do |identifier|
-        cdm_request(*identifier)
+    def cmd_items
+      @cdm_items ||= records.map do |record|
+        cdm_item_klass.new(record: record, cdm_endpoint: cdm_endpoint)
       end
     end
 
-    # e.g. local_identifiers.map { |identifier| extractor.cdm_request(*identifier) }
-    def cdm_request(collection, id)
-      cdm_notification_klass.call!(collection, id, cdm_endpoint)
-      cdm_api_klass.new(base_url: cdm_endpoint,
-                        collection: collection,
-                        id: id).metadata
+    def transformed_records
+      @transformation ||=
+        transformer_klass.new(cdm_records: cmd_items.map(&:metadata),
+                              oai_endpoint: oai_endpoint,
+                              field_mappings: field_mappings).records
     end
 
-    def sets
-      @oai_request ||=
-        cache_klass.cache.fetch("cdmbl_set_specs", expires_in: 10.minutes) do
-          oai_request_klass.new(base_uri: oai_endpoint).sets
-        end
+    def complete_records
+      records.map do |record|
+        cdm_request(*identifier)
+      end
     end
   end
 end

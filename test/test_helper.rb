@@ -5,6 +5,12 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require 'minitest/spec'
 require 'sidekiq/testing'
+# Hash.from_xml
+# Rails cache
+require 'rails'
+
+# Rails turns off backtraces, turn them back on
+ENV['BACKTRACE'] = 'YES '
 
 # Avoid testing solr itself
 module CDMBL

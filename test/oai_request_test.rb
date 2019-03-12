@@ -86,7 +86,7 @@ module CDMBL
       it 'returns an array of one set' do
         client.expect :get_response, client_response, [URI('http://example.com?verb=ListSets')]
         client_response.expect :body, list_single_sets_response
-        request = OaiRequest.new(uri: 'http://example.com', client: client)
+        request = OaiRequest.new(endpoint_url: 'http://example.com', client: client)
         assert_respond_to request, :sets
         request.sets.must_equal([{"setSpec"=>"coll123", "setName"=>"blah", "setDescription"=>{"dc"=>{"description"=>"blah"}}}])
         client.verify
@@ -97,7 +97,7 @@ module CDMBL
     it 'requests and parses sets' do
       client.expect :get_response, client_response, [URI('http://example.com?verb=ListSets')]
       client_response.expect :body, list_sets_response
-      request = OaiRequest.new(uri: 'http://example.com', client: client)
+      request = OaiRequest.new(endpoint_url: 'http://example.com', client: client)
       assert_respond_to request, :sets
       request.sets.must_equal([{"setSpec"=>"coll123", "setName"=>"blah", "setDescription"=>{"dc"=>{"description"=>"blah"}}}, {"setSpec"=>"coll1234", "setName"=>"blah 1", "setDescription"=>{"dc"=>{"description"=>"blah 1"}}}])
       client.verify
@@ -107,7 +107,7 @@ module CDMBL
     it 'provides a keyed set lookup' do
       client.expect :get_response, client_response, [URI('http://example.com?verb=ListSets')]
       client_response.expect :body, list_sets_response
-      request = OaiRequest.new(uri: 'http://example.com', client: client)
+      request = OaiRequest.new(endpoint_url: 'http://example.com', client: client)
       assert_respond_to request, :sets
       request.set_lookup.must_equal({"coll123"=>{:name=>"blah", :description=>"blah"}, "coll1234"=>{:name=>"blah 1", :description=>"blah 1"}})
       client.verify
@@ -121,7 +121,7 @@ module CDMBL
                       [URI('http://example.com?verb=ListIdentifiers&metadataPrefix=oai_dc&set=swede')]
         client_response.expect :body, resumption_token_response
         request = OaiRequest.new set_spec: 'swede',
-                                uri: 'http://example.com',
+                                endpoint_url: 'http://example.com',
                                 client: client
         request.next_resumption_token.must_equal("foo:123")
       end
@@ -134,7 +134,7 @@ module CDMBL
                       [URI('http://example.com?verb=ListIdentifiers&metadataPrefix=oai_dc&set=swede')]
         client_response.expect :body, header_response
         request = OaiRequest.new set_spec: 'swede',
-                                uri: 'http://example.com',
+                                endpoint_url: 'http://example.com',
                                 client: client
         request.next_resumption_token.must_be_nil
       end
@@ -146,7 +146,7 @@ module CDMBL
                     [URI('http://example.com?verb=ListIdentifiers&metadataPrefix=oai_dc&set=swede')]
       client_response.expect :body, header_response
       request = OaiRequest.new set_spec: 'swede',
-                               uri: 'http://example.com',
+                               endpoint_url: 'http://example.com',
                                client: client
       request.records.must_equal([{"identifier"=>"blerg.com:foocollection1/123", :id=>"foocollection1:123"}])
     end
@@ -157,7 +157,7 @@ module CDMBL
                       client_response,
                       [URI('http://example.com?verb=ListIdentifiers&metadataPrefix=oai_dc')]
         client_response.expect :body, header_response
-        request = OaiRequest.new uri: 'http://example.com',
+        request = OaiRequest.new endpoint_url: 'http://example.com',
                                  client: client
         request.records.must_equal([{"identifier"=>"blerg.com:foocollection1/123", :id=>"foocollection1:123"}])
         client.verify
@@ -170,7 +170,7 @@ module CDMBL
                       client_response,
                       [URI('http://example.com?verb=ListIdentifiers&resumptionToken=oai:123')]
         client_response.expect :body, header_response
-        request = OaiRequest.new uri: 'http://example.com',
+        request = OaiRequest.new endpoint_url: 'http://example.com',
                                  resumption_token: 'oai:123',
                                  client: client
         request.records.must_equal([{"identifier"=>"blerg.com:foocollection1/123", :id=>"foocollection1:123"}])
@@ -183,7 +183,7 @@ module CDMBL
                     client_response,
                     [URI('http://example.com?verb=ListIdentifiers&metadataPrefix=oai_dc')]
       client_response.expect :body, header_response_with_status
-      request = OaiRequest.new uri: 'http://example.com',
+      request = OaiRequest.new endpoint_url: 'http://example.com',
                           client: client
       request.deletable_ids.must_equal(["foo:1234"])
       request.updatables.must_equal([{"identifier"=>"blerg.com:foo/123", :id=>"foo:123"}, {"identifier"=>"blerg.com:foo/1235", :id=>"foo:1235"}])

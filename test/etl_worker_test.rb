@@ -9,6 +9,7 @@ module CDMBL
     let(:oai_request_klass_object) { Minitest::Mock.new }
     let(:load_worker_klass) { Minitest::Mock.new }
     let(:transform_worker_klass) { Minitest::Mock.new }
+    let(:batch_size) { 10 }
     let(:config) do
       {
         'cdm_endpoint' => 'http://example.com',
@@ -26,7 +27,7 @@ module CDMBL
                              oai_request_klass_object,
                              [
                                {
-                                uri: 'http://example.com1',
+                                endpoint_url: 'http://example.com1',
                                 resumption_token: nil,
                                 set_spec: nil
                                }
@@ -40,7 +41,7 @@ module CDMBL
       load_worker_klass.expect :perform_async, nil, [[], ["col134:blarg"], {:blah=>'blah'}]
       # Since we have configured the extractor to process batches of two
       # the small record batches will be processed in two goes
-      transform_worker_klass.expect :perform_async, '', [[{:foo=>"bar"}], {:blah=>"blah"}, "http://example.com", "http://example.com1", false]
+      transform_worker_klass.expect :perform_async, '', [[{:foo=>"bar"}], {:blah=>"blah"}, "http://example.com", "http://example.com1", false, 2]
 
       worker = ETLWorker.new
       worker.etl_worker_klass = etl_worker_klass
@@ -60,7 +61,6 @@ module CDMBL
       config = {
         'cdm_endpoint' => 'https://server16022.contentdm.oclc.org/dmwebservices/index.php',
         'oai_endpoint' => 'http://cdm16022.contentdm.oclc.org/oai/oai.php',
-        'max_compounds' => 10,
         'is_recursive' => false,
         'batch_size' => 2,
         'solr_config' => { blah: 'blah' }

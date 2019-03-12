@@ -40,7 +40,7 @@ module CDMBL
       @is_recursive      = config.fetch('is_recursive', true)
 
       @oai_request = oai_request_klass.new(
-        uri: oai_endpoint,
+        endpoint_url: oai_endpoint,
         resumption_token: resumption_token,
         set_spec: config.fetch('set_spec', nil)
       )
@@ -100,7 +100,8 @@ module CDMBL
                                            solr_config,
                                            cdm_endpoint,
                                            oai_endpoint,
-                                           field_mappings)
+                                           field_mappings,
+                                           batch_size)
     end
 
     def delete_deletables!

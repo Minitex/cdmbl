@@ -4,48 +4,37 @@ require 'titleize'
 module CDMBL
   class Transformer
     attr_reader :cdm_records,
-                :oai_sets,
+                :oai_endpoint,
                 :field_mappings,
-                :extract_compounds,
-                :record_transformer
+                :record_transformer,
+                :cache_klass,
+                :oai_request_klass
+
     def initialize(cdm_records: [],
-                   oai_sets: {},
+                   oai_endpoint: :MISSING_OAI_ENDPOINT,
                    field_mappings: false,
-                   extract_compounds: false,
-                   record_transformer: RecordTransformer)
-      @cdm_records = cdm_records.map do |record|
-        record.merge('record_type' => 'primary')
-      end
-      @oai_sets           = oai_sets
+                   record_transformer: RecordTransformer,
+                   cache_klass: ::Rails,
+                   oai_request_klass: OaiRequest)
+      @cdm_records        = cdm_records
+      @oai_endpoint       = oai_endpoint
       @field_mappings     = field_mappings ? field_mappings : default_field_mappings
-      @extract_compounds  = extract_compounds
       @record_transformer = record_transformer
+      @cache_klass        = cache_klass
+      @oai_request_klass  = oai_request_klass
     end
 
     def records
-      raw_records.map { |record| to_solr(record) }.compact
+      cdm_records.map { |record| to_solr(record) }.compact
     end
 
     private
 
-    def raw_records
-      extract_compounds == false ? cdm_records : cdm_records.concat(compounds)
-    end
-
-    # The 'page' key holds the children of a given record
-    def compounds
-      # Get all the records with compounds
-      cdm_records.reject do |record|
-        record['page'].nil?
-        # Get just the compound data
-      end.map do |record|
-        record['page'].each_with_index.map do |page, i|
-          # Associate each compound child with its parent
-          page.merge!('parent_id' => record['id'],
-                      'parent' => record.except('page'),
-                      'record_type' => 'secondary', 'child_index' => i)
+    def sets
+      @oai_request ||=
+        cache_klass.cache.fetch("cdmdexer_sets", expires_in: 10.minutes) do
+          oai_request_klass.new(base_uri: oai_endpoint).sets
         end
-      end.flatten
     end
 
     def mappings
@@ -58,7 +47,7 @@ module CDMBL
       if {'id' => record['id']} == record
         return nil
       else
-        record_transformer.new(record: record.merge('oai_sets' => oai_sets),
+        record_transformer.new(record: record.merge('oai_sets' => sets),
                                field_mappings: mappings).transform!
       end
     end
@@ -66,7 +55,7 @@ module CDMBL
     def default_field_mappings
       [
         {dest_path: 'location_llsi', origin_path: '/', formatters: [LocationFormatter]},
-        {dest_path: 'id', origin_path: 'id', formatters: [StripFormatter, IDFormatter]},
+        {dest_path: 'id', origin_path: 'id', formatters: [StripFormatter]},
         {dest_path: 'setspec_ssi', origin_path: '/', formatters: [AddSetSpecFormatter, SetSpecFormatter]},
         {dest_path: 'collection_name_ssi', origin_path: '/', formatters: [AddSetSpecFormatter, CollectionNameFormatter]},
         {dest_path: 'collection_name_tei', origin_path: '/', formatters: [AddSetSpecFormatter, CollectionNameFormatter]},
@@ -165,7 +154,6 @@ module CDMBL
         {dest_path: 'geographic_feature_ssim', origin_path: 'geogra', formatters: [Titlieze, StripFormatter, SplitFormatter, StripFormatter]},
         {dest_path: 'geographic_feature_teim', origin_path: 'geogra', formatters: [StripFormatter]},
         {dest_path: 'geographic_feature_unstem_search', origin_path: 'geogra', formatters: [StripFormatter]},
-        {dest_path: 'compound_objects_ts', origin_path: 'page', formatters: [ToJsonFormatter]},
         {dest_path: 'geonam_ssi', origin_path: 'geonam', formatters: [StripFormatter]},
         {dest_path: 'kaltura_audio_ssi', origin_path: 'audio', formatters: [StripFormatter]},
         {dest_path: 'kaltura_audio_playlist_ssi', origin_path: 'audioa', formatters: [StripFormatter]},
