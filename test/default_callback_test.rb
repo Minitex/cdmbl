@@ -5,7 +5,8 @@ module CDMBL
     it 'calls the default callback' do
       # See test_helper.rb for the test implementation where it lives because
       # the test implementation is used in multiple places
-      Callback.call!('').must_equal 'blerg this is a test callback'
+      result = Callback.call!('')
+      _(result).must_equal 'blerg this is a test callback'
     end
   end
 end

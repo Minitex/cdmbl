@@ -10,7 +10,7 @@ module CDMBL
       client_response.expect :body, '<sets><set>foo</set></sets>'
       request = OaiRequest.new(base_uri: 'http://example.com', client: client)
       assert_respond_to request, :sets
-      request.sets.must_equal('sets' => { 'set' => 'foo' })
+      _(request.sets).must_equal('sets' => { 'set' => 'foo' })
       client.verify
       client_response.verify
     end
@@ -24,7 +24,7 @@ module CDMBL
       request = OaiRequest.new set: 'swede',
                                base_uri: 'http://example.com',
                                client: client
-      request.identifiers.must_equal('oai_response' => { 'record' => 'foo' })
+      _(request.identifiers).must_equal('oai_response' => { 'record' => 'foo' })
     end
 
     describe 'when no resumption token is present' do
@@ -35,7 +35,7 @@ module CDMBL
         client_response.expect :body, '<record>foo</record>'
         request = OaiRequest.new base_uri: 'http://example.com',
                                  client: client
-        request.identifiers.must_equal('record' => 'foo')
+        _(request.identifiers).must_equal('record' => 'foo')
       end
     end
 
@@ -48,7 +48,7 @@ module CDMBL
         request = OaiRequest.new base_uri: 'http://example.com',
                                  resumption_token: 'oai:123',
                                  client: client
-        request.identifiers.must_equal('record' => 'foo')
+        _(request.identifiers).must_equal('record' => 'foo')
       end
     end
   end

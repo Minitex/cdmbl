@@ -15,11 +15,11 @@ module CDMBL
       oai_record_klass.expect :new, oai_record_klass_object_2, [{:oai_client=> oai_client, :identifier=>'oai:blah:colleciton124/2'}]
       oai_record_klass_object_1.expect :record_exists?, true
       oai_record_klass_object_2.expect :record_exists?, false
-      OaiDeletables.new(identifiers: identifiers,
+      deletables = OaiDeletables.new(identifiers: identifiers,
                         prefix: 'oai:blah:',
                         oai_client: oai_client,
                         oai_record_klass: oai_record_klass).deletables
-        .must_equal ['colleciton124:2']
+      _(deletables).must_equal ['colleciton124:2']
       oai_record_klass.verify
       oai_record_klass_object_1.verify
       oai_record_klass_object_2.verify

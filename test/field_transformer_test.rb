@@ -17,7 +17,7 @@ module CDMBL
       transformer = FieldTransformer.new(field_mapping: field_mapping,
                                          record: record,
                                          formatter_klass: formatter)
-      transformer.reduce.must_equal({"title_ssi"=>"The Stars My Destination"})
+      _(transformer.reduce).must_equal({"title_ssi"=>"The Stars My Destination"})
       formatter.verify
       field_mapping.verify
     end

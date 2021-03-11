@@ -72,7 +72,8 @@ module CDMBL
                                   resumption_token: 'foo',
                                   set_spec: 'bar',
                                   oai_request_klass: oai_request_klass)
-        extractor.local_identifiers.must_equal [['p16022coll44', '0']]
+        local_ids = extractor.local_identifiers
+        _(local_ids).must_equal [['p16022coll44', '0']]
         oai_request_klass.verify
         oai_request_klass_object.verify
       end
@@ -94,10 +95,11 @@ module CDMBL
                                 resumption_token: 'foo',
                                 set_spec: 'bar',
                                 oai_request_klass: oai_request_klass)
-      extractor.local_identifiers.must_equal [
-                                               ['p16022coll44', '0'],
-                                               ['p16022coll44', '1']
-                                             ]
+      local_ids = extractor.local_identifiers
+      _(local_ids).must_equal [
+                                ['p16022coll44', '0'],
+                                ['p16022coll44', '1']
+                              ]
       oai_request_klass.verify
       oai_request_klass_object.verify
     end
@@ -117,7 +119,7 @@ module CDMBL
                                 resumption_token: 'foo',
                                 set_spec: 'bar',
                                 oai_request_klass: oai_request_klass)
-      extractor.set_lookup.must_equal(
+      _(extractor.set_lookup).must_equal(
         {
           'p16022coll44' => {
               :name => 'American Craft Council',
@@ -147,7 +149,7 @@ module CDMBL
                                 resumption_token: 'foo',
                                 set_spec: 'bar',
                                 oai_request_klass: oai_request_klass)
-      extractor.next_resumption_token.must_equal 'swede:96:oclc-cdm-allsets:0000-00-00:9999-99-99:oai_dc'
+      _(extractor.next_resumption_token).must_equal 'swede:96:oclc-cdm-allsets:0000-00-00:9999-99-99:oai_dc'
       oai_request_klass.verify
       oai_request_klass_object.verify
     end
@@ -208,17 +210,19 @@ module CDMBL
                                 set_spec: 'bar',
                                 oai_request_klass: oai_request_klass,
                                 oai_filter_klass: oai_filter_klass)
-      extractor.local_identifiers.must_equal 'foo'
-      extractor.deletable_ids.must_equal 'bar'
+      _(extractor.local_identifiers).must_equal 'foo'
+      _(extractor.deletable_ids).must_equal 'bar'
       oai_filter_klass.verify
       oai_filter_klass_object.verify
     end
 
     describe 'when a collection is empty or doesn\'t exist' do
       it 'returns an emtpy identifier list' do
-        Extractor.new(oai_endpoint: 'http://cdm16022.contentdm.oclc.org/oai/oai.php',
-          set_spec: 'sdffsddsfhldfshldfshjdfshjkdfshjlkdfshljkdfshljkfds')
-            .local_identifiers.must_equal([])
+        local_ids = Extractor.new(
+          oai_endpoint: 'http://cdm16022.contentdm.oclc.org/oai/oai.php',
+          set_spec: 'sdffsddsfhldfshldfshjdfshjkdfshjlkdfshljkdfshljkfds'
+        ).local_identifiers
+        _(local_ids).must_equal([])
       end
     end
   end

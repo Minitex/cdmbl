@@ -47,24 +47,33 @@ module CDMBL
     end
 
     it 'responds with deletable records' do
-      BatchDeleter.new(solr_client: CDMBL::Solr.new(url: solr_url),
-                       oai_client: OaiClient.new(base_url: oai_url),
-                       prefix: prefix).deletables.must_equal ["bad:ID"]
+      result = BatchDeleter.new(
+        solr_client: CDMBL::Solr.new(url: solr_url),
+        oai_client: OaiClient.new(base_url: oai_url),
+        prefix: prefix
+      ).deletables
+      _(result).must_equal(["bad:ID"])
     end
 
     describe 'when no more results from solr are present' do
       it 'signals the last batch' do
-        BatchDeleter.new(solr_client: CDMBL::Solr.new(url: solr_url),
-                         oai_client: OaiClient.new(base_url: oai_url),
-                         prefix: prefix).last_batch?.must_equal true
+        result = BatchDeleter.new(
+          solr_client: CDMBL::Solr.new(url: solr_url),
+          oai_client: OaiClient.new(base_url: oai_url),
+          prefix: prefix
+        ).last_batch?
+        _(result).must_equal(true)
       end
     end
     describe 'when more results from solr are present' do
       it 'does not signal the last batch' do
-        BatchDeleter.new(batch_size: 1,
-                         solr_client: CDMBL::Solr.new(url: solr_url),
-                         oai_client: OaiClient.new(base_url: oai_url),
-                         prefix: prefix).last_batch?.must_equal false
+        result = BatchDeleter.new(
+          batch_size: 1,
+          solr_client: CDMBL::Solr.new(url: solr_url),
+          oai_client: OaiClient.new(base_url: oai_url),
+          prefix: prefix
+        ).last_batch?
+        _(result).must_equal(false)
       end
     end
   end

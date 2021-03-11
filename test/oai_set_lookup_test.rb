@@ -9,7 +9,7 @@ module CDMBL
 
     it 'keys an OAI ListSet response by the setSpec' do
       lookup = OAISetLookup.new(oai_sets: oai_sets)
-      lookup.keyed.must_equal({"p16022coll44"=>{:name=>"American Craft Council", :description=>"Collection information undefined."}, "swede"=>{:name=>"American Swedish Institute", :description=>nil}})
+      _(lookup.keyed).must_equal({"p16022coll44"=>{:name=>"American Craft Council", :description=>"Collection information undefined."}, "swede"=>{:name=>"American Swedish Institute", :description=>nil}})
     end
 
   end

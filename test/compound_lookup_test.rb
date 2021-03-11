@@ -31,12 +31,12 @@ module CDMBL
 
         request_klass_object.expect :fetch, '{"page": [1,2,3]}', []
 
-        compound = CompoundLookup.new(cdm_endpoint: cdm_endpoint,
+        count = CompoundLookup.new(cdm_endpoint: cdm_endpoint,
                                 collection: collection,
                                 id: id,
                                 service_klass: service_klass,
-                                request_klass: request_klass)
-        compound.count.must_equal 3
+                                request_klass: request_klass).count
+        _(count).must_equal 3
         service_klass.verify
         request_klass.verify
       end

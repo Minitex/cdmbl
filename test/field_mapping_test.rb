@@ -5,7 +5,7 @@ module CDMBL
     describe 'when it is given a hash with string keys' do
       it 'symbolizes these keys' do
         stringy_config = {'dest_path' => 'blah', 'origin_path' => 'gah', 'formatters' => [1,2]}
-        FieldMapping.new(config: stringy_config).config.must_equal(
+        _(FieldMapping.new(config: stringy_config).config).must_equal(
           {:dest_path=>"blah", :origin_path=>"gah", :formatters=>[1, 2]}
         )
       end
@@ -14,7 +14,7 @@ module CDMBL
     describe 'when it is givin an array of formatters in string format' do
       it 'constantizes these formatters' do
         stringy_formatters = { formatters: ['CDMBL::StripFormatter', 'CDMBL::IDFormatter'] }
-        FieldMapping.new(config: stringy_formatters).formatters.must_equal(
+        _(FieldMapping.new(config: stringy_formatters).formatters).must_equal(
           [CDMBL::StripFormatter, CDMBL::IDFormatter]
         )
       end
@@ -23,17 +23,17 @@ module CDMBL
     describe 'when given incomplete config data' do
       it 'throws an error for the origin_path field' do
         mapping = FieldMapping.new(config: {})
-      ->  { FieldMapping.new(config: {}).origin_path }.must_raise(KeyError)
+        _(-> { mapping.origin_path }).must_raise(KeyError)
       end
 
       it 'throws an error for the dest_path field' do
         mapping = FieldMapping.new(config: {})
-      ->  { FieldMapping.new(config: {}).dest_path }.must_raise(KeyError)
+        _(-> { mapping.dest_path }).must_raise(KeyError)
       end
 
       it 'sets a default formatter' do
         mapping = FieldMapping.new(config: {})
-      FieldMapping.new(config: {}).formatters.must_equal([CDMBL::DefaultFormatter])
+        _(mapping.formatters).must_equal([CDMBL::DefaultFormatter])
       end
     end
   end

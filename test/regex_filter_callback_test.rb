@@ -8,12 +8,12 @@ module CDMBL
         it 'it finds a positive match' do
           set = {'setName' => 'ul_cat'}
           filter = RegexFilterCallback.new(pattern: /^ul_/)
-          filter.valid?(set: set).must_equal true
+          _(filter.valid?(set: set)).must_equal true
         end
         it 'skips non-matches' do
           set = {'setName' => 'mdl_dog'}
           filter = RegexFilterCallback.new(pattern: /^ul_/)
-          filter.valid?(set: set).must_equal false
+          _(filter.valid?(set: set)).must_equal false
         end
       end
 
@@ -21,12 +21,12 @@ module CDMBL
         it 'it finds a positive match' do
           set = {'setName' => 'ul_cat'}
           filter = RegexFilterCallback.new(pattern: /^ul_/, inclusive: false)
-          filter.valid?(set: set).must_equal false
+          _(filter.valid?(set: set)).must_equal false
         end
         it 'skips non-matches' do
           set = {'setName' => 'mdl_dog'}
           filter = RegexFilterCallback.new(pattern: /^ul_/, inclusive: false)
-          filter.valid?(set: set).must_equal true
+          _(filter.valid?(set: set)).must_equal true
         end
       end
     end
@@ -35,12 +35,12 @@ module CDMBL
         it 'it finds a positive match' do
           set = {'setSpec' => 'ul_cat'}
           filter = RegexFilterCallback.new(field: 'setSpec', pattern: /^ul_/)
-          filter.valid?(set: set).must_equal true
+          _(filter.valid?(set: set)).must_equal true
         end
         it 'skips non-matches' do
           set = {'setSpec' => 'mdl_dog'}
           filter = RegexFilterCallback.new(field: 'setSpec', pattern: /^ul_/)
-          filter.valid?(set: set).must_equal false
+          _(filter.valid?(set: set)).must_equal false
         end
       end
 
@@ -48,12 +48,12 @@ module CDMBL
         it 'it finds a positive match' do
           set = {'setSpec' => 'ul_cat'}
           filter = RegexFilterCallback.new(field: 'setSpec', pattern: /^ul_/, inclusive: false)
-          filter.valid?(set: set).must_equal false
+          _(filter.valid?(set: set)).must_equal false
         end
         it 'skips non-matches' do
           set = {'setSpec' =>  'mdl_dog'}
           filter = RegexFilterCallback.new(field: 'setSpec', pattern: /^ul_/, inclusive: false)
-          filter.valid?(set: set).must_equal true
+          _(filter.valid?(set: set)).must_equal true
         end
       end
     end
