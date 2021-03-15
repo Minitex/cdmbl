@@ -15,7 +15,7 @@ module CDMBL
       client_response.verify
     end
 
-    it 'allows selective harvesting by date and set' do
+    it 'allows selective harvesting by set' do
       client.expect :get_response,
                     client_response,
                     [URI('http://example.com?verb=ListIdentifiers&metadataPrefix=oai_dc&set=swede')]
@@ -24,6 +24,43 @@ module CDMBL
       request = OaiRequest.new set: 'swede',
                                base_uri: 'http://example.com',
                                client: client
+      _(request.identifiers).must_equal('oai_response' => { 'record' => 'foo' })
+    end
+
+    it 'allows selective harvesting by date' do
+      client.expect(
+        :get_response,
+        client_response,
+        [URI('http://example.com?verb=ListIdentifiers&metadataPrefix=oai_dc&from=2021-03-01')]
+      )
+      client_response.expect(
+        :body,
+        '<oai-response><record>foo</record></oai-response>'
+      )
+      request = OaiRequest.new(
+        base_uri: 'http://example.com',
+        from: '2021-03-01',
+        client: client
+      )
+      _(request.identifiers).must_equal('oai_response' => { 'record' => 'foo' })
+    end
+
+    it 'allows selective harvesting by date and set' do
+      client.expect(
+        :get_response,
+        client_response,
+        [URI('http://example.com?verb=ListIdentifiers&metadataPrefix=oai_dc&set=swede&from=2021-03-01')]
+      )
+      client_response.expect(
+        :body,
+        '<oai-response><record>foo</record></oai-response>'
+      )
+      request = OaiRequest.new(
+        base_uri: 'http://example.com',
+        set: 'swede',
+        from: '2021-03-01',
+        client: client
+      )
       _(request.identifiers).must_equal('oai_response' => { 'record' => 'foo' })
     end
 

@@ -16,6 +16,7 @@ module CDMBL
     def initialize(oai_endpoint: '',
                    resumption_token: nil,
                    set_spec: nil,
+                   from: nil,
                    oai_request_klass: OaiRequest,
                    oai_filter_klass: OAIFilter,
                    oai_set_lookup_klass: OAISetLookup)
@@ -24,7 +25,8 @@ module CDMBL
       @oai_set_lookup_klass = oai_set_lookup_klass
       @oai_request          = oai_requester(oai_endpoint,
                                             resumption_token,
-                                            set_spec)
+                                            set_spec,
+                                            from)
     end
 
     def deletable_ids
@@ -49,11 +51,16 @@ module CDMBL
 
     private
 
-    def oai_requester(oai_endpoint, resumption_token, set_spec)
-      @oai_requester ||=
-        oai_request_klass.new(base_uri: oai_endpoint,
-                              resumption_token: resumption_token,
-                              set: set_spec)
+    def oai_requester(oai_endpoint, resumption_token, set_spec, from)
+      @oai_requester ||= begin
+        args = {
+          base_uri: oai_endpoint,
+          resumption_token: resumption_token,
+          set: set_spec,
+        }
+        args[:from] = from if from
+        oai_request_klass.new(args)
+      end
     end
 
     # Get the local collection and id from an OAI namespaced identifier

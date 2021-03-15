@@ -5,16 +5,19 @@ module CDMBL
                 :resumption_token,
                 :client,
                 :set,
-                :identifier
+                :identifier,
+                :from
     def initialize(base_uri: '',
-                    resumption_token: nil,
-                    set: nil,
-                    identifier: '',
-                    client: Net::HTTP)
+                   resumption_token: nil,
+                   set: nil,
+                   identifier: '',
+                   from: nil,
+                   client: Net::HTTP)
       @base_uri         = base_uri
       @resumption_token = resumption_token
       @client           = client
       @set              = (set) ? "&set=#{set}" : ''
+      @from             = from ? "&from=#{from}" : ''
       @identifier       = identifier
     end
 
@@ -29,7 +32,7 @@ module CDMBL
     private
 
     def first_batch_uri
-      "#{base_uri}?verb=ListIdentifiers&metadataPrefix=oai_dc#{set}"
+      "#{base_uri}?verb=ListIdentifiers&metadataPrefix=oai_dc#{set}#{from}"
     end
 
     def batch_uri
