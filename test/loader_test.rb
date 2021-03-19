@@ -4,11 +4,11 @@ module CDMBL
   describe Loader do
 
     it 'provides a default solr client' do
-      Loader.new().must_respond_to :solr_client
+      _(Loader.new).must_respond_to :solr_client
     end
 
     it 'keeps track of a set of records for loading' do
-      Loader.new().must_respond_to :records
+      _(Loader.new).must_respond_to :records
     end
 
     it 'persists records' do

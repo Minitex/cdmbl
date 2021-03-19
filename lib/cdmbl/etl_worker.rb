@@ -16,7 +16,8 @@ module CDMBL
                 :set_spec,
                 :max_compounds,
                 :batch_size,
-                :is_recursive
+                :is_recursive,
+                :from
 
     attr_writer :compound_filter_klass,
                 :extractor_klass,
@@ -40,6 +41,7 @@ module CDMBL
       @max_compounds     = config.fetch('max_compounds', 10)
       @batch_size        = config.fetch('batch_size', 5).to_i
       @is_recursive      = config.fetch('is_recursive', true)
+      @from              = config.fetch('from', nil)
       extract_batch!
       next_batch!
     end
@@ -114,12 +116,14 @@ module CDMBL
     end
 
     def transform!(ids)
-      transform_worker_klass.perform_async(ids,
-                                           solr_config,
-                                           cdm_endpoint,
-                                           oai_endpoint,
-                                           field_mappings,
-                                           extract_compounds)
+      transform_worker_klass.perform_async(
+        ids,
+        solr_config,
+        cdm_endpoint,
+        oai_endpoint,
+        field_mappings,
+        extract_compounds
+      )
     end
 
     def delete_deletables!
@@ -127,17 +131,20 @@ module CDMBL
     end
 
     def compound_filter
-      @compound_filter ||=
-        compound_filter_klass.new(record_ids: extraction.local_identifiers,
-                                  cdm_endpoint: cdm_endpoint,
-                                  max_compounds: max_compounds)
+      @compound_filter ||= compound_filter_klass.new(
+        record_ids: extraction.local_identifiers,
+        cdm_endpoint: cdm_endpoint,
+        max_compounds: max_compounds
+      )
     end
 
     def extraction
-      @extraction ||=
-        extractor_klass.new(oai_endpoint: oai_endpoint,
-                            resumption_token: resumption_token,
-                            set_spec: set_spec)
+      @extraction ||= extractor_klass.new(
+        oai_endpoint: oai_endpoint,
+        resumption_token: resumption_token,
+        set_spec: set_spec,
+        from: from
+      )
     end
   end
 end

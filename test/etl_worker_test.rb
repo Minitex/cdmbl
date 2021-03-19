@@ -22,7 +22,8 @@ module CDMBL
         'max_compounds' => 10,
         'is_recursive' => true,
         'batch_size' => 2,
-        'solr_config' => { blah: 'blah' }
+        'solr_config' => { blah: 'blah' },
+        'from' => '2021-03-03'
       }
     end
     let(:deletable_ids) { [9, 10, 2] }
@@ -40,6 +41,7 @@ module CDMBL
                                           'solr_config' => {
                                             blah: 'blah'
                                           },
+                                          'from' => '2021-03-03',
                                           resumption_token: 'col134/blarg'
                                         }
                                      ]
@@ -64,7 +66,8 @@ module CDMBL
                                {
                                  oai_endpoint: 'http://example.com1',
                                  resumption_token: nil,
-                                 set_spec: nil
+                                 set_spec: nil,
+                                 from: '2021-03-03'
                                }
                              ]
       extractor_klass_object.expect :next_resumption_token, 'col134/blarg', []
@@ -140,7 +143,7 @@ module CDMBL
         'batch_size' => 2,
         'solr_config' => { blah: 'blah' }
       }
-      worker = ETLWorker.perform_async(config)
+      ETLWorker.perform_async(config)
       ETLWorker.drain
     end
   end

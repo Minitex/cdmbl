@@ -15,7 +15,7 @@ module CDMBL
       transformer = RecordTransformer.new(record: record,
                                           field_mappings: mappings,
                                           field_transformer: field_transformer)
-      transformer.transform!.must_equal({foo: 'bar', baz: 'blech'})
+      _(transformer.transform!).must_equal({foo: 'bar', baz: 'blech'})
       field_transformer.verify
       field_transformer_object.verify
     end

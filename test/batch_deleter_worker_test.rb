@@ -15,8 +15,10 @@ module CDMBL
 
     it 'works - a worker sanity check' do
       worker = BatchDeleterWorker.new
-      worker.perform(0, prefix, oai_url, solr_url).deletables.must_equal ["bad:ID"]
-      worker.perform(0, prefix, oai_url, solr_url).last_batch?.must_equal true
+      deletables = worker.perform(0, prefix, oai_url, solr_url).deletables
+      _(deletables).must_equal(["bad:ID"])
+      last_batch = worker.perform(0, prefix, oai_url, solr_url).last_batch?
+      _(last_batch).must_equal(true)
     end
 
     it 'Collaborates with BatchDeleter' do

@@ -72,7 +72,7 @@ module CDMBL
   class Titlieze
     def self.format(value)
       if value.respond_to?(:map)
-        value.map {|value| value.titleize }
+        value.map(&:titleize)
       else
         value.titleize
       end

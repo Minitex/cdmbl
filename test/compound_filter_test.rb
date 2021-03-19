@@ -22,8 +22,10 @@ module CDMBL
       compound_filter = CompoundFilter.new(record_ids: record_ids,
                                            cdm_endpoint: 'http://example.com',
                                            compound_lookup_klass: compound_lookup)
-      compound_filter.filter(large: true).must_equal [["col1", "sdf4"]]
-      compound_filter.filter(large: false).must_equal [["col1", "sdf3"]]
+      large_ones = compound_filter.filter(large: true)
+      _(large_ones).must_equal [["col1", "sdf4"]]
+      small_ones = compound_filter.filter(large: false)
+      _(small_ones).must_equal [["col1", "sdf3"]]
       compound_lookup.verify
       compound_lookup_object.verify
     end

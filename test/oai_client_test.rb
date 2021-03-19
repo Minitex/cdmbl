@@ -11,7 +11,7 @@ module CDMBL
     it 'makes a request' do
       http_client.expect :get, http_client_object, ['http://example.come?getRecord=blah:foo/1']
       http_client_object.expect :to_s, '<xml><foo>blah</foo></xml>'
-      oai_client.request('getRecord=blah:foo/1').must_equal({"xml"=>{"foo"=>"blah"}})
+      _(oai_client.request('getRecord=blah:foo/1')).must_equal({"xml"=>{"foo"=>"blah"}})
       http_client.verify
     end
   end
