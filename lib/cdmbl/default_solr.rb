@@ -9,13 +9,14 @@ module CDMBL
       @client = client
     end
 
-    def ids(start: 0)
+    def ids(start: 0, rows: 10)
       connection.get('select',
-        :params => { :q => '*:*',
-          :defType => 'edismax',
-          :fl => '',
-          :rows => 10,
-          :start => start
+        params: {
+          q: '*:*',
+          defType: 'edismax',
+          fl: '',
+          rows: rows,
+          start: start
         }
       )
     end
