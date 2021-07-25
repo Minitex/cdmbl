@@ -2,7 +2,6 @@ require 'test_helper'
 
 module CDMBL
   describe BatchDeleter do
-    let(:oai_client) { Minitest::Mock.new }
     let(:solr_client) { Minitest::Mock.new }
     let(:oai_deletables_klass) { Minitest::Mock.new }
     let(:oai_deletables_klass_object) { Minitest::Mock.new }
@@ -31,7 +30,7 @@ module CDMBL
           {
             identifiers: solr_docs,
             prefix: prefix,
-            oai_client: oai_client
+            oai_url: oai_url
           }
         ]
       )
@@ -42,7 +41,7 @@ module CDMBL
         prefix: prefix,
         start: 42,
         batch_size: 21,
-        oai_client: oai_client,
+        oai_url: oai_url,
         solr_client: solr_client,
         oai_deletables_klass: oai_deletables_klass,
         notification_callback: notification_callback
@@ -58,7 +57,7 @@ module CDMBL
     it 'responds with deletable records' do
       result = BatchDeleter.new(
         solr_client: CDMBL::Solr.new(url: solr_url),
-        oai_client: OaiClient.new(base_url: oai_url),
+        oai_url: oai_url,
         prefix: prefix
       ).deletables
       _(result).must_equal(["bad:ID"])
@@ -68,7 +67,7 @@ module CDMBL
       it 'signals the last batch' do
         result = BatchDeleter.new(
           solr_client: CDMBL::Solr.new(url: solr_url),
-          oai_client: OaiClient.new(base_url: oai_url),
+          oai_url: oai_url,
           prefix: prefix
         ).last_batch?
         _(result).must_equal(true)
@@ -80,7 +79,7 @@ module CDMBL
         result = BatchDeleter.new(
           batch_size: 1,
           solr_client: CDMBL::Solr.new(url: solr_url),
-          oai_client: OaiClient.new(base_url: oai_url),
+          oai_url: oai_url,
           prefix: prefix
         ).last_batch?
         _(result).must_equal(false)
@@ -91,7 +90,8 @@ module CDMBL
       it 'adds the batch_size to the current start' do
         deleter = BatchDeleter.new(
           start: 100,
-          batch_size: 100
+          batch_size: 100,
+          oai_url: oai_url
         )
         _(deleter.next_start).must_equal(200)
       end

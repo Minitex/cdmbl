@@ -1,9 +1,11 @@
 require 'sidekiq'
+
 module CDMBL
   class BatchDeleterWorker
     include Sidekiq::Worker
     attr_reader :start, :batch_size, :prefix, :oai_url, :solr_url
-    attr_writer :batch_deleter_klass, :job_complete_notification, :oai_client, :solr_client
+    attr_writer :batch_deleter_klass, :job_complete_notification, :solr_client
+
     def perform(start = 0, batch_size = 10, prefix = '', oai_url = '', solr_url = '')
       @start      = start
       @batch_size = batch_size
@@ -45,16 +47,12 @@ module CDMBL
         batch_size: batch_size,
         prefix: prefix,
         solr_client: solr_client,
-        oai_client: oai_client
+        oai_url: oai_url
       )
     end
 
     def solr_client
       @solr_client ||= CDMBL::Solr.new(url: solr_url)
-    end
-
-    def oai_client
-      @oai_client ||= OaiClient.new base_url: oai_url
     end
   end
 end

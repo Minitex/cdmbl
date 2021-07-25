@@ -7,7 +7,6 @@ module CDMBL
     let(:batch_deleter_klass) { Minitest::Mock.new }
     let(:batch_deleter_klass_object) { Minitest::Mock.new }
     let(:job_complete_notification) { Minitest::Mock.new }
-    let(:oai_client) { Minitest::Mock.new }
     let(:solr_client) { Minitest::Mock.new }
     let(:ids) { [{ collection: 'p16022coll44', id: '1' }, { collection: 'p16022coll17', id: '669' }] }
     let(:oai_url) { 'http://cdm16022.contentdm.oclc.org/oai/oai.php' }
@@ -31,7 +30,7 @@ module CDMBL
           batch_size: 42,
           prefix: 'oai:cdm16022.contentdm.oclc.org:',
           solr_client: solr_client,
-          oai_client: oai_client
+          oai_url: oai_url
         }]
       )
       batch_deleter_klass_object.expect :delete!, nil, []
@@ -39,7 +38,6 @@ module CDMBL
       batch_deleter_klass_object.expect :next_start, 42
       worker = BatchDeleterWorker.new
       worker.batch_deleter_klass = batch_deleter_klass
-      worker.oai_client = oai_client
       worker.solr_client = solr_client
       worker.perform(0, 42, prefix, oai_url, solr_url)
       batch_deleter_klass.verify
@@ -54,7 +52,7 @@ module CDMBL
           batch_size: 42,
           prefix: 'oai:cdm16022.contentdm.oclc.org:',
           solr_client: solr_client,
-          oai_client: oai_client
+          oai_url: oai_url
         }]
       )
       batch_deleter_klass_object.expect :delete!, nil
@@ -63,7 +61,6 @@ module CDMBL
 
       worker = BatchDeleterWorker.new
       worker.batch_deleter_klass = batch_deleter_klass
-      worker.oai_client = oai_client
       worker.solr_client = solr_client
       worker.job_complete_notification = job_complete_notification
 
