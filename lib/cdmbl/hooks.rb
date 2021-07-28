@@ -1,14 +1,15 @@
 module CDMBL
   def self.const_missing(name)
-    if name.to_s == 'Solr'
+    case name.to_s
+    when 'Solr'
       hook(pattern: name.to_s, default: DefaultSolr)
-    elsif name.to_s == 'CompletedCallback'
+    when 'CompletedCallback', 'BatchDeleteJobCompletedCallback', 'BatchDeletedCallback'
       hook(pattern: name.to_s, default: DefaultCompletedCallback)
-    elsif name.to_s == 'OaiNotification'
+    when 'OaiNotification'
       hook(pattern: name.to_s, default: DefaultOaiNotification)
-    elsif name.to_s == 'LoaderNotification'
+    when 'LoaderNotification'
       hook(pattern: name.to_s, default: DefaultLoaderNotification)
-    elsif name.to_s == 'CdmNotification'
+    when 'CdmNotification'
       hook(pattern: name.to_s, default: DefaultCdmNotification)
     end
   end
