@@ -43,6 +43,29 @@ module CDMBL
       batch_deleter_klass.verify
     end
 
+    it 'provides BatchDeleter with the given solr_query if applicable' do
+      batch_deleter_klass.expect(
+        :new,
+        batch_deleter_klass_object,
+        [{
+          start: 0,
+          batch_size: 42,
+          prefix: 'oai:cdm16022.contentdm.oclc.org:',
+          solr_client: solr_client,
+          solr_query: 'setspec_ssi:otter',
+          oai_url: oai_url
+        }]
+      )
+      batch_deleter_klass_object.expect :delete!, nil, []
+      batch_deleter_klass_object.expect :last_batch?, nil, []
+      batch_deleter_klass_object.expect :next_start, 42
+      worker = BatchDeleterWorker.new
+      worker.batch_deleter_klass = batch_deleter_klass
+      worker.solr_client = solr_client
+      worker.perform(0, 42, prefix, oai_url, solr_url, 'setspec_ssi:otter')
+      batch_deleter_klass.verify
+    end
+
     it 'calls the callback after the last batch' do
       batch_deleter_klass.expect(
         :new,

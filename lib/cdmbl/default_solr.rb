@@ -1,7 +1,7 @@
 require 'rsolr'
 
 module CDMBL
-  # Commnicate with Solr: add / delete stuff
+  # Communicate with Solr: add / delete stuff
   class DefaultSolr
     attr_reader :url, :client
     def initialize(url: 'http://localhost:8983/solr/core-here', client: RSolr)
@@ -9,16 +9,16 @@ module CDMBL
       @client = client
     end
 
-    def ids(start: 0, rows: 10)
-      connection.get('select',
-        params: {
-          q: '*:*',
-          defType: 'edismax',
-          fl: '',
-          rows: rows,
-          start: start
-        }
-      )
+    def ids(start: 0, rows: 10, fq: nil)
+      params = {
+        q: '*:*',
+        fq: fq,
+        defType: 'edismax',
+        fl: '',
+        rows: rows,
+        start: start
+      }.compact
+      connection.get('select', params: params)
     end
 
     def connection

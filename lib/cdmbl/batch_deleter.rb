@@ -4,6 +4,7 @@ module CDMBL
                 :start,
                 :batch_size,
                 :oai_url,
+                :solr_query,
                 :solr_client,
                 :oai_deletables_klass,
                 :notification_callback
@@ -11,6 +12,7 @@ module CDMBL
                    start: 0,
                    batch_size: 10,
                    oai_url:,
+                   solr_query: nil,
                    solr_client: :missing_solr_client,
                    oai_deletables_klass: OaiDeletables,
                    notification_callback: CDMBL::BatchDeletedCallback)
@@ -18,6 +20,7 @@ module CDMBL
       @start                = start
       @batch_size           = batch_size
       @oai_url              = oai_url
+      @solr_query           = solr_query
       @solr_client          = solr_client
       @oai_deletables_klass = oai_deletables_klass
       @notification_callback = notification_callback
@@ -60,10 +63,14 @@ module CDMBL
     end
 
     def results
-      @results ||= solr_client.ids(
-        start: start,
-        rows: batch_size
-      )
+      @results ||= begin
+        args = {
+          start: start,
+          rows: batch_size,
+          fq: solr_query
+        }.compact
+        solr_client.ids(args)
+      end
     end
   end
 end

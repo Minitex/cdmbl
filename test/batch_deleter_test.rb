@@ -54,6 +54,43 @@ module CDMBL
       notification_callback.verify
     end
 
+    it 'passes the provided solr_query to the Solr client' do
+      solr_client.expect(
+        :ids,
+        solr_response,
+        [{start: 42, rows: 21, fq: 'setspec_ssi:sll'}]
+      )
+      oai_deletables_klass.expect(
+        :new,
+        oai_deletables_klass_object,
+        [
+          {
+            identifiers: solr_docs,
+            prefix: prefix,
+            oai_url: oai_url
+          }
+        ]
+      )
+      oai_deletables_klass_object.expect(:deletables, ['collection1:23'])
+      solr_client.expect(:delete, nil, [['collection1:23']])
+
+      instance = BatchDeleter.new(
+        prefix: prefix,
+        start: 42,
+        batch_size: 21,
+        oai_url: oai_url,
+        solr_client: solr_client,
+        solr_query: 'setspec_ssi:sll',
+        oai_deletables_klass: oai_deletables_klass,
+        notification_callback: notification_callback
+      )
+      notification_callback.expect :call!, nil, [instance]
+
+      instance.delete!
+
+      solr_client.verify
+    end
+
     it 'responds with deletable records' do
       result = BatchDeleter.new(
         solr_client: CDMBL::Solr.new(url: solr_url),
