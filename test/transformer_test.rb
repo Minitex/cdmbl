@@ -112,15 +112,20 @@ module CDMBL
     end
     describe 'when a field mapping produces an error' do
       it "raises an error along with the field mapping configuration" do
-          records = [{
-                      'id' => 'foo/5123',
-                      'has_children' => true
-                  }]
+        records = [{ 'id' => 'foo/5123', 'has_children' => true }]
 
-          mappings = [{dest_path: 'has_children', origin_path: 'has_children', formatters: [StripFormatter]}]
-          transformation = Transformer.new(cdm_records: records, extract_compounds: true, field_mappings: mappings)
-          err = _(->{ transformation.records }).must_raise RuntimeError
-          _(err.message).must_equal 'Mapping Error:{:dest_path=>"has_children", :origin_path=>"has_children", :formatters=>[CDMBL::StripFormatter]} Error:undefined method `strip\' for true:TrueClass'
+        mappings = [{
+          dest_path: 'has_children',
+          origin_path: 'has_children',
+          formatters: [StripFormatter]
+        }]
+        transformation = Transformer.new(
+          cdm_records: records,
+          extract_compounds: true,
+          field_mappings: mappings
+        )
+        err = _(->{ transformation.records }).must_raise RuntimeError
+        _(err.message).must_include 'Mapping Error:{:dest_path=>"has_children", :origin_path=>"has_children", :formatters=>[CDMBL::StripFormatter]} Error:undefined method `strip\' for true:TrueClass'
       end
     end
   end

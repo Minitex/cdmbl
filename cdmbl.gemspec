@@ -18,17 +18,18 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'hash_at_path', '~> 0.1'
-  spec.add_dependency 'contentdm_api', '~> 0.5.0'
+  spec.add_dependency 'contentdm_api', '~> 0.6.0'
   spec.add_dependency 'sidekiq', '>= 3.5'
   spec.add_dependency 'titleize', '~> 1.4'
   spec.add_dependency 'rsolr', '~> 2.0'
+  spec.add_dependency 'rexml'
   # CDMBL expects to run in a rails app, but just to avoid adding
   # another external dependency for XML procssing, we rely on activesupport's
   # Has.to_jsonl feature for testing and to allow this gem to function
   # independently from a rails app
   spec.add_dependency 'activesupport', '>= 4.2'
 
-  spec.add_development_dependency 'bundler', '~> 1.12'
+  spec.add_development_dependency 'bundler', '~> 2.1'
   spec.add_development_dependency 'rake', '~> 12.0'
   spec.add_development_dependency 'minitest', '~> 5.0'
   spec.add_development_dependency 'yard', '~> 0.9.0'

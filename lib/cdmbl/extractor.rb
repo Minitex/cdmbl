@@ -1,5 +1,5 @@
 require 'contentdm_api'
-require 'active_support/core_ext/hash/conversions'
+require 'active_support'
 require 'hash_at_path'
 require 'forwardable'
 
@@ -23,10 +23,12 @@ module CDMBL
       @oai_request_klass    = oai_request_klass
       @oai_filter_klass     = oai_filter_klass
       @oai_set_lookup_klass = oai_set_lookup_klass
-      @oai_request          = oai_requester(oai_endpoint,
-                                            resumption_token,
-                                            set_spec,
-                                            from)
+      @oai_request          = oai_requester(
+        oai_endpoint,
+        resumption_token,
+        set_spec,
+        from
+      )
     end
 
     def deletable_ids
@@ -59,7 +61,7 @@ module CDMBL
           set: set_spec,
         }
         args[:from] = from if from
-        oai_request_klass.new(args)
+        oai_request_klass.new(**args)
       end
     end
 

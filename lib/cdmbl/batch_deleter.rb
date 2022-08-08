@@ -69,7 +69,7 @@ module CDMBL
           rows: batch_size,
           fq: solr_query
         }.compact
-        solr_client.ids(args)
+        solr_client.ids(**args)
       end
     end
   end
