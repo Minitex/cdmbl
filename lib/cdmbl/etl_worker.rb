@@ -1,4 +1,6 @@
 require 'sidekiq'
+require 'active_support/core_ext/hash/keys'
+
 module CDMBL
   # Extract records from OAI, delete records marked for deletion, sort the
   # remaning records them into "big and small" record piles based upon how many

@@ -28,54 +28,55 @@ module CDMBL
     let(:deletable_ids) { [9, 10, 2] }
 
     it 'extracts data from OAI' do
-      oai_set_lookup_klass.expect :new,
-                                  oai_set_lookup_klass_object,
-                                  [{:oai_sets=>"blah"}]
+      oai_set_lookup_klass.expect(
+        :new,
+        oai_set_lookup_klass_object,
+        [],
+        oai_sets: "blah"
+      )
       oai_set_lookup_klass_object.expect :keyed, sets_keyed, []
-      cdm_api_klass.expect :new,
-                           cdm_api_klass_object,
-                           [
-                             {
-                               base_url: cdm_endpoint,
-                               collection: 'coll1',
-                               id: 1
-                             }
-                           ]
-      cdm_api_klass.expect :new,
-                           cdm_api_klass_object,
-                           [
-                             {
-                               base_url: cdm_endpoint,
-                               collection: 'coll1',
-                               id: 2
-                             }
-                           ]
+      cdm_api_klass.expect(
+        :new,
+        cdm_api_klass_object,
+        [],
+        base_url: cdm_endpoint,
+        collection: 'coll1',
+        id: 1
+      )
+      cdm_api_klass.expect(
+        :new,
+        cdm_api_klass_object,
+        [],
+        base_url: cdm_endpoint,
+        collection: 'coll1',
+        id: 2
+      )
       cdm_api_klass_object.expect :metadata, { blah: 'blah' }, []
       cdm_api_klass_object.expect :metadata, { blah: 'blah1' }, []
       cdm_notification_klass.expect :call!, nil, ['coll1', 1, cdm_endpoint]
       cdm_notification_klass.expect :call!, nil, ['coll1', 2, cdm_endpoint]
-      transformer_klass.expect :new,
-                               transformer_klass_object,
-                               [
-                                 {
-                                   cdm_records: [
-                                     { blah: 'blah' },
-                                     { blah: 'blah1' }
-                                   ],
-                                   oai_sets: sets_keyed,
-                                   field_mappings: field_mappings,
-                                   extract_compounds: false
-                                 }
-                               ]
+      transformer_klass.expect(
+        :new,
+        transformer_klass_object,
+        [],
+        cdm_records: [
+          { blah: 'blah' },
+          { blah: 'blah1' }
+        ],
+        oai_sets: sets_keyed,
+        field_mappings: field_mappings,
+        extract_compounds: false
+      )
       transformer_klass_object.expect :records, transformed_records, []
-      load_worker_klass.expect :perform_async,
-                               nil,
-                               [
-                                 transformed_records,
-                                 [],
-                                 solr_config
-                               ]
-
+      load_worker_klass.expect(
+        :perform_async,
+        nil,
+        [
+          transformed_records,
+          [],
+          solr_config
+        ]
+      )
       cache_klass.expect :cache, { 'cdmbl_set_specs' => 'blah' }, []
 
       worker = TransformWorker.new
@@ -87,12 +88,14 @@ module CDMBL
       worker.cache_klass = cache_klass
 
       # Run the extractor worker
-      worker.perform(identifiers,
-                     solr_config,
-                     cdm_endpoint,
-                     oai_endpoint,
-                     field_mappings,
-                     false)
+      worker.perform(
+        identifiers,
+        solr_config,
+        cdm_endpoint,
+        oai_endpoint,
+        field_mappings,
+        false
+      )
       oai_set_lookup_klass.verify
       cdm_api_klass.verify
       cdm_notification_klass.verify

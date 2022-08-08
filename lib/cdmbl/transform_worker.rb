@@ -1,4 +1,6 @@
 require 'sidekiq'
+require 'active_support/core_ext/numeric'
+
 module CDMBL
   class TransformWorker
     include Sidekiq::Worker
@@ -46,7 +48,7 @@ module CDMBL
     end
 
     def cdm_notification_klass
-      @cdm_notification_klass ||= CdmNotification
+      @cdm_notification_klass ||= CDMBL::CdmNotification
     end
 
     def transformer_klass
@@ -68,11 +70,12 @@ module CDMBL
     end
 
     def transformed_records
-      @transformation ||=
-        transformer_klass.new(cdm_records: records,
-                              oai_sets: set_lookup,
-                              field_mappings: field_mappings,
-                              extract_compounds: extract_compounds).records
+      @transformation ||= transformer_klass.new(
+        cdm_records: records,
+        oai_sets: set_lookup,
+        field_mappings: field_mappings,
+        extract_compounds: extract_compounds
+      ).records
     end
 
     def set_lookup
@@ -88,9 +91,11 @@ module CDMBL
     # e.g. local_identifiers.map { |identifier| extractor.cdm_request(*identifier) }
     def cdm_request(collection, id)
       cdm_notification_klass.call!(collection, id, cdm_endpoint)
-      cdm_api_klass.new(base_url: cdm_endpoint,
-                        collection: collection,
-                        id: id).metadata
+      cdm_api_klass.new(
+        base_url: cdm_endpoint,
+        collection: collection,
+        id: id
+      ).metadata
     end
 
     def sets

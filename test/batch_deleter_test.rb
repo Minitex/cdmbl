@@ -4,7 +4,7 @@ module CDMBL
   describe BatchDeleter do
     let(:solr_client) { Minitest::Mock.new }
     let(:oai_deletables_klass) { Minitest::Mock.new }
-    let(:oai_deletables_klass_object) { Minitest::Mock.new }
+    let(:oai_deletables_instance) { Minitest::Mock.new }
     let(:notification_callback) { Minitest::Mock.new }
     let(:solr_docs) { ['collection1:23', 'collection1:24'] }
     let(:prefix) { 'oai:blah:' }
@@ -22,20 +22,23 @@ module CDMBL
     let(:prefix) { 'oai:cdm16022.contentdm.oclc.org:' }
 
     it 'calls its collaborators' do
-      solr_client.expect :ids, solr_response, [{start: 42, rows: 21}]
+      solr_client.expect(
+        :ids,
+        solr_response,
+        [],
+        start: 42,
+        rows: 21
+      )
       oai_deletables_klass.expect(
         :new,
-        oai_deletables_klass_object,
-        [
-          {
-            identifiers: solr_docs,
-            prefix: prefix,
-            oai_url: oai_url
-          }
-        ]
+        oai_deletables_instance,
+        [],
+        identifiers: solr_docs,
+        prefix: prefix,
+        oai_url: oai_url
       )
       solr_client.expect(:delete, nil, [['collection1:23']])
-      oai_deletables_klass_object.expect :deletables, ['collection1:23']
+      oai_deletables_instance.expect :deletables, ['collection1:23']
 
       instance = BatchDeleter.new(
         prefix: prefix,
@@ -50,7 +53,7 @@ module CDMBL
       instance.delete!
       solr_client.verify
       oai_deletables_klass.verify
-      oai_deletables_klass_object.verify
+      oai_deletables_instance.verify
       notification_callback.verify
     end
 
@@ -58,20 +61,20 @@ module CDMBL
       solr_client.expect(
         :ids,
         solr_response,
-        [{start: 42, rows: 21, fq: 'setspec_ssi:sll'}]
+        [],
+        start: 42,
+        rows: 21,
+        fq: 'setspec_ssi:sll'
       )
       oai_deletables_klass.expect(
         :new,
-        oai_deletables_klass_object,
-        [
-          {
-            identifiers: solr_docs,
-            prefix: prefix,
-            oai_url: oai_url
-          }
-        ]
+        oai_deletables_instance,
+        [],
+        identifiers: solr_docs,
+        prefix: prefix,
+        oai_url: oai_url
       )
-      oai_deletables_klass_object.expect(:deletables, ['collection1:23'])
+      oai_deletables_instance.expect(:deletables, ['collection1:23'])
       solr_client.expect(:delete, nil, [['collection1:23']])
 
       instance = BatchDeleter.new(
@@ -92,10 +95,17 @@ module CDMBL
     end
 
     it 'responds with deletable records' do
+      oai_deletables_klass.expect(
+        :new,
+        oai_deletables_instance
+      ) { |args| true }
+      oai_deletables_instance.expect(:deletables, ['bad:ID'])
+
       result = BatchDeleter.new(
         solr_client: CDMBL::Solr.new(url: solr_url),
         oai_url: oai_url,
-        prefix: prefix
+        prefix: prefix,
+        oai_deletables_klass: oai_deletables_klass
       ).deletables
       _(result).must_equal(["bad:ID"])
     end

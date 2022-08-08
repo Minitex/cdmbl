@@ -8,7 +8,8 @@ module CDMBL
       client.expect(
         :connect,
         connection,
-        [{url: "http://solr:8983/solr/some-core-here"}]
+        [],
+        url: "http://solr:8983/solr/some-core-here"
       )
       Solr.new(
         url: 'http://solr:8983/solr/some-core-here',
@@ -21,7 +22,8 @@ module CDMBL
       client.expect(
         :connect,
         connection,
-        [{url: "http://solr:8983/solr/some-core-here"}]
+        [],
+        url: "http://solr:8983/solr/some-core-here"
       )
       connection.expect :add, 'blah', [[{id: "3sfsdf"}]]
       connection.expect :commit, nil
@@ -38,20 +40,21 @@ module CDMBL
         client.expect(
           :connect,
           connection,
-          [{url: "http://solr:8983/solr/some-core-here"}]
+          [],
+          url: "http://solr:8983/solr/some-core-here"
         )
-        connection.expect(:get, mock_results, [
-          'select',
-          {
-            params: {
-              q: '*:*',
-              defType: 'edismax',
-              fl: '',
-              rows: 2,
-              start: 1
-            }
+        connection.expect(
+          :get,
+          mock_results,
+          ['select'],
+          params: {
+            q: '*:*',
+            defType: 'edismax',
+            fl: '',
+            rows: 2,
+            start: 1
           }
-        ])
+        )
         results = Solr.new(
           url: 'http://solr:8983/solr/some-core-here',
           client: client
@@ -66,21 +69,22 @@ module CDMBL
         client.expect(
           :connect,
           connection,
-          [{url: "http://solr:8983/solr/some-core-here"}]
+          [],
+          url: "http://solr:8983/solr/some-core-here"
         )
-        connection.expect(:get, mock_results, [
-          'select',
-          {
-            params: {
-              q: '*:*',
-              fq: 'setspec_ssi:otter',
-              defType: 'edismax',
-              fl: '',
-              rows: 10,
-              start: 0
-            }
+        connection.expect(
+          :get,
+          mock_results,
+          ['select'],
+          params: {
+            q: '*:*',
+            fq: 'setspec_ssi:otter',
+            defType: 'edismax',
+            fl: '',
+            rows: 10,
+            start: 0
           }
-        ])
+        )
         results = Solr.new(
           url: 'http://solr:8983/solr/some-core-here',
           client: client

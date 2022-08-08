@@ -54,7 +54,7 @@ module CDMBL
           oai_url: oai_url
         }.compact
 
-        batch_deleter_klass.new(args)
+        batch_deleter_klass.new(**args)
       end
     end
 

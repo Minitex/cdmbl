@@ -8,7 +8,6 @@ require 'sidekiq/testing'
 
 # Avoid testing solr itself
 module CDMBL
-
   class TestConnection
     def get(query, params)
       {

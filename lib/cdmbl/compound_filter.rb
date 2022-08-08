@@ -37,9 +37,11 @@ module CDMBL
     end
 
     def count(collection, id)
-      compound_lookup_klass.new(cdm_endpoint: cdm_endpoint,
-                                collection: collection,
-                                id: id).count
+      compound_lookup_klass.new(
+        cdm_endpoint: cdm_endpoint,
+        collection: collection,
+        id: id
+      ).count
     end
   end
 end

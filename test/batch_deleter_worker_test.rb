@@ -25,13 +25,12 @@ module CDMBL
       batch_deleter_klass.expect(
         :new,
         batch_deleter_klass_object,
-        [{
-          start: 0,
-          batch_size: 42,
-          prefix: 'oai:cdm16022.contentdm.oclc.org:',
-          solr_client: solr_client,
-          oai_url: oai_url
-        }]
+        [],
+        start: 0,
+        batch_size: 42,
+        prefix: 'oai:cdm16022.contentdm.oclc.org:',
+        solr_client: solr_client,
+        oai_url: oai_url
       )
       batch_deleter_klass_object.expect :delete!, nil, []
       batch_deleter_klass_object.expect :last_batch?, nil, []
@@ -47,14 +46,13 @@ module CDMBL
       batch_deleter_klass.expect(
         :new,
         batch_deleter_klass_object,
-        [{
-          start: 0,
-          batch_size: 42,
-          prefix: 'oai:cdm16022.contentdm.oclc.org:',
-          solr_client: solr_client,
-          solr_query: 'setspec_ssi:otter',
-          oai_url: oai_url
-        }]
+        [],
+        start: 0,
+        batch_size: 42,
+        prefix: 'oai:cdm16022.contentdm.oclc.org:',
+        solr_client: solr_client,
+        solr_query: 'setspec_ssi:otter',
+        oai_url: oai_url
       )
       batch_deleter_klass_object.expect :delete!, nil, []
       batch_deleter_klass_object.expect :last_batch?, nil, []
@@ -70,13 +68,12 @@ module CDMBL
       batch_deleter_klass.expect(
         :new,
         batch_deleter_klass_object,
-        [{
-          start: 0,
-          batch_size: 42,
-          prefix: 'oai:cdm16022.contentdm.oclc.org:',
-          solr_client: solr_client,
-          oai_url: oai_url
-        }]
+        [],
+        start: 0,
+        batch_size: 42,
+        prefix: 'oai:cdm16022.contentdm.oclc.org:',
+        solr_client: solr_client,
+        oai_url: oai_url
       )
       batch_deleter_klass_object.expect :delete!, nil
       batch_deleter_klass_object.expect :last_batch?, true
