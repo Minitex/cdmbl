@@ -12,7 +12,7 @@ module CDMBL
     attr_writer :loader_klass, :solr_klass
 
     def perform(records = [], deletables = [], solr_config = {})
-      @solr_config = solr_config.symbolize_keys
+      @solr_config = solr_config
       @records     = records
       @deletables  = deletables
       load!
@@ -37,7 +37,7 @@ module CDMBL
     private
 
     def solr_client
-      @solr_client ||= solr_klass.new(**solr_config)
+      @solr_client ||= solr_klass.new(url: solr_config['url'])
     end
   end
 end

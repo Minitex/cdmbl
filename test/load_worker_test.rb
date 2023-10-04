@@ -4,7 +4,7 @@ Sidekiq::Testing.fake!
 
 module CDMBL
   describe LoadWorker do
-    let(:solr_config) { { 'solr' => 'config' } }
+    let(:solr_config) { { 'url' => 'localhost:8983' } }
     let(:records) { [{ foo: 'bar' }, { foo: 'baz' }] }
     let(:deletables) { [{ meh: 'whatevs' }] }
     let(:solr_klass) { Minitest::Mock.new }
@@ -14,7 +14,7 @@ module CDMBL
 
     it 'sends the records and deletable items to the loader class' do
       solr_klass.expect(
-        :new, solr_client, [], solr: 'config'
+        :new, solr_client, [], url: 'localhost:8983'
       )
       loader_klass.expect(
         :new,

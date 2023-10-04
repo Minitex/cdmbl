@@ -33,7 +33,7 @@ module CDMBL
       # results in the long set of arguments that follows. Otherwise, we'd
       # simply inject the OAI request and extractor objects
       @config            = config
-      @solr_config       = config.fetch('solr_config').symbolize_keys
+      @solr_config       = config.fetch('solr_config')
       @cdm_endpoint      = config.fetch('cdm_endpoint')
       @oai_endpoint      = config.fetch('oai_endpoint')
       @field_mappings    = config.fetch('field_mappings', false)
@@ -98,7 +98,7 @@ module CDMBL
     end
 
     def next_config
-      config.merge(resumption_token: next_resumption_token)
+      config.merge('resumption_token' => next_resumption_token)
     end
 
     def next_resumption_token
