@@ -22,7 +22,7 @@ module CDMBL
         'max_compounds' => 10,
         'is_recursive' => true,
         'batch_size' => 2,
-        'solr_config' => { blah: 'blah' },
+        'solr_config' => { 'blah' => 'blah' },
         'from' => '2021-03-03'
       }
     end
@@ -40,10 +40,10 @@ module CDMBL
             'is_recursive' => true,
             'batch_size' => 2,
             'solr_config' => {
-              blah: 'blah'
+              'blah' => 'blah'
             },
             'from' => '2021-03-03',
-            resumption_token: 'col134/blarg'
+            'resumption_token' => 'col134/blarg'
           }
         ]
       )
@@ -76,7 +76,7 @@ module CDMBL
       load_worker_klass.expect(
         :perform_async,
         nil,
-        [[], [9, 10, 2], {:blah=>'blah'}]
+        [[], [9, 10, 2], { 'blah' => 'blah' }]
       )
       # Since we have configured the extractor to process batches of two
       # the small record batches will be processed in two goes

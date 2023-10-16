@@ -11,7 +11,9 @@ module CDMBL
 
     def run!
       set_specs.map do |set_spec|
-        etl_worker_klass.perform_async(etl_config.merge(set_spec: set_spec))
+        etl_worker_klass.perform_async(
+          etl_config.merge(set_spec: set_spec).deep_stringify_keys
+        )
       end
     end
   end

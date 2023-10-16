@@ -1,9 +1,6 @@
 require 'cdmbl'
 
 namespace :cdmbl do
-
-
-
   desc 'Ingest a Collection Syncronously'
   task :collection_sync do
     # config = etl.config
@@ -18,7 +15,6 @@ namespace :cdmbl do
     )
   end
 
-
   desc 'Launch a background job to index metadata from CONTENTdm to Solr.'
   task :batch, [
     :solr_url,
@@ -29,12 +25,12 @@ namespace :cdmbl do
     :max_compounds
   ] do |t, args|
     CDMBL::ETLWorker.perform_async(
-      solr_config: { url: args.fetch(:solr_url) },
-      oai_endpoint: args.fetch(:oai_endpoint),
-      cdm_endpoint: args.fetch(:cdm_endpoint),
-      set_spec: args[:set_spec] != '""' ? args[:set_spec] : nil,
-      batch_size: args.fetch(:batch_size, 10),
-      max_compounds: args.fetch(:max_compounds, 10)
+      'solr_config' => { 'url' => args.fetch(:solr_url) },
+      'oai_endpoint' => args.fetch(:oai_endpoint),
+      'cdm_endpoint' => args.fetch(:cdm_endpoint),
+      'set_spec' => args[:set_spec] != '""' ? args[:set_spec] : nil,
+      'batch_size' => args.fetch(:batch_size, 10),
+      'max_compounds' => args.fetch(:max_compounds, 10)
     )
   end
 
@@ -88,7 +84,7 @@ namespace :cdmbl do
   ] do |t, args|
     CDMBL::TransformWorker.perform_async(
       [[args.fetch(:collection), args.fetch(:id)]],
-      { url: args.fetch(:solr_url) },
+      { 'url' => args.fetch(:solr_url) },
       args.fetch(:cdm_endpoint),
       args.fetch(:oai_endpoint)
     )
